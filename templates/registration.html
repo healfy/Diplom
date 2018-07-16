@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Registration{% endblock %}
+{% block content %}
+    <form enctype="multipart/form-data" class="col s6" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.username.label_tag }}
+                {{ form.username}}
+                <div class="fieldWrapper">
+                    {{ form.username.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.email.label_tag }}
+                {{ form.email}}
+                <div class="fieldWrapper">
+                    {{ form.email.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                <div class="fieldWrapper">
+                    {{ form.password1.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                <div class="fieldWrapper">
+                    {{ form.password2.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" class="waves-effect waves-light btn">
+                <i class="material-icons right">cloud</i>
+                Зарегистрироваться
+            </button>
+        </div>
+    </form>
+{% endblock %}

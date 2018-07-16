@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    <form enctype="multipart/form-data" class="col s6" method="post">
+        {% csrf_token %}
+        <div class="input-field col s6" >
+            <i class="material-icons prefix">account_circle</i>
+            {{ form.username }}
+            {{ form.username.label_tag }}
+            <div class="fieldWrapper">
+                {{ form.email.errors }}
+            </div>
+        </div>
+        <div class="input-field col s6">
+            <i class="material-icons prefix">https</i>
+            {{ form.password }}
+            {{ form.password.label_tag }}
+            <div class="fieldWrapper">
+                {{ form.password.errors }}
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" class="waves-effect waves-light btn">
+                <i class="material-icons right">cloud</i>
+                Вход
+            </button>
+        </div>
+    </form>
+{% endblock %}

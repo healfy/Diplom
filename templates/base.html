@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script
+            src="http://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="{% static 'css/materialize.css' %}">
+        <script src="{% static 'js/materialize.js' %}"></script>
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <div class="parallax-container">
+            <div class="parallax"><img src="{% static 'background.jpg' %}"></div>
+        </div>
+        <nav>
+            <div class="nav-wrapper" >
+              <a href="/" class="brand-logo">Main</a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                  {% if user.is_authenticated or user.is_active %}
+                      <li>{{ user }}</li>
+                  {% else %}
+                      <li><a href="/login/"> Вход </a></li>
+                      <li><a href="/register/">Регистрация</a></li>
+                  {% endif %}
+              </ul>
+            </div>
+        </nav>
+        <div class="section white">
+        <div class="row container">
+        <div class="row" >{% block content %}{% endblock %}</div>
+        </div>
+        </div>
+        <footer class="page-footer">
+            <button  class="btn waves-effect waves-light theme-switcher" type="submit" name="action">Set Theme Color
+           <i class="material-icons right">send</i>
+         </button>
+        <div class="container">
+         <div class="row">
+           <div class="col l6 s12">
+             <h5 class="white-text">Footer Content</h5>
+             <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+           </div>
+         </div>
+       </div>
+       <div class="footer-copyright">
+         <div class="container">
+            © 2018 Konstanin Zavadksi
+             {% if user.is_active %}
+             <a class="right hide-on-med-and-down grey-text text-lighten-4" href="/logout/">Выйти из профиля</a>
+             {% endif %}
+         </div>
+       </div>
+        </footer>
+        <div class="parallax-container">
+          <div class="parallax"><img src="{% static 'kosmos_a86.jpg' %}"></div>
+        </div>
+        <script>
+                $(document).ready(function(){
+                $('.parallax').parallax();
+                            });
+        </script>
+        <script>
+          var themeColor ;
+        // Check browser support
+        if (typeof(Storage) !== "undefined") {
+            // Store
+            themeColor = localStorage.getItem("themeColor");
+           if(themeColor == undefined)
+           {localStorage.setItem("themeColor", "blue");
+            themeColor = 'blue';
+            }
+
+        } else {
+          Materialize.toast("Sorry, your browser does not support Web Storage...", 4000)
+        }
+              $(".nav-wrapper").css("background-color", themeColor);
+              $(".secondary-content>.material-icons").css("color", themeColor);
+              $(".btn").css("background-color", themeColor);
+              $(".page-footer").css("background-color",themeColor);
+              $(".input-field").css("color", themeColor);
+              $(".input-field>.material-icons").css("color", themeColor);
+              $(".input-field>label").css("color",themeColor);
+              $(".dropdown-content>li>a").css("color", themeColor);
+        function getRandomColor() {
+           var letters = '0123456789ABCDEF'.split('');
+           var color = '#';
+           for (var i = 0; i < 6; i++ ) {
+               color += letters[Math.floor(Math.random() * 16)];
+           }
+           return color;
+        }
+
+        $(document).ready(function(){
+
+            $(".theme-switcher").click(function(){
+              var themeColor = getRandomColor();
+              $(".nav-wrapper").css("background-color", themeColor);
+              $(".secondary-content>.material-icons").css("color", themeColor);
+              $(".btn").css("background-color", themeColor);
+              $(".page-footer").css("background-color", themeColor);
+              $(".input-field").css("color", themeColor);
+              $(".input-field>.material-icons").css("color", themeColor);
+              $(".input-field>label").css("color", themeColor);
+              $(".btn-floating").css("background-color", themeColor);
+              $(".dropdown-content>li>a").css("color", themeColor);
+
+              // Update Theme Color
+               if (typeof(Storage) !== "undefined") {
+                // Store
+                localStorage.setItem("themeColor", themeColor);
+
+               } else {
+              Materialize.toast("Sorry, your browser does not support Web Storage...", 4000)
+               }
+
+            });
+        });
+        </script>
+    </body>
+</html>

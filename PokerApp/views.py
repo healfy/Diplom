@@ -33,9 +33,6 @@ class LoginFormView(FormView):
         login(self.request, self.user)
         return super(LoginFormView, self).form_valid(form)
 
-    def form_invalid(self, form):
-        print()
-
 
 class LogoutView(View):
     def get(self, request):

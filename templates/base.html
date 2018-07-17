@@ -10,20 +10,22 @@
         <link rel="stylesheet" href="{% static 'css/materialize.css' %}">
         <script src="{% static 'js/materialize.js' %}"></script>
         <meta charset="UTF-8">
-        <title>{% block title %}{% endblock %}</title>
+        <title>{% block title %}Main Page{% endblock %}</title>
     </head>
     <body>
         <div class="parallax-container">
-            <div class="parallax"><img src="{% static 'background.jpg' %}"></div>
+            <div class="parallax"><img src="{% static 'poker_wallpaper.jpg' %}"></div>
         </div>
         <nav>
             <div class="nav-wrapper" >
-              <a href="/" class="brand-logo">Main</a>
+              <a href="/" class="brand-logo">JoyCasino</a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
                   {% if user.is_authenticated or user.is_active %}
-                      <li>{{ user }}</li>
+                      <li><a href="/login/"> Lobby </a></li>
+                      <li><a href="/profile/{{ user }}/">{{ user }}</a></li>
                   {% else %}
                       <li><a href="/login/"> Вход </a></li>
+                      <li><a href="/login/"> Lobby </a></li>
                       <li><a href="/register/">Регистрация</a></li>
                   {% endif %}
               </ul>
@@ -56,7 +58,7 @@
        </div>
         </footer>
         <div class="parallax-container">
-          <div class="parallax"><img src="{% static 'kosmos_a86.jpg' %}"></div>
+          <div class="parallax"><img  height="500" width="800" src="{% static 'look.com.ua-123338.jpg' %}"></div>
         </div>
         <script>
                 $(document).ready(function(){

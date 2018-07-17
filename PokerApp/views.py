@@ -1,11 +1,11 @@
 from django.contrib.auth import logout, login
 from django.contrib.auth.forms import AuthenticationForm
-
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import FormView
+from django.views.generic import FormView, UpdateView
 
-from PokerApp.forms import CustomUserCreationForm
+from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
+from PokerApp.models import CustomUser
 
 
 def main(request):
@@ -38,3 +38,15 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect("/")
+
+
+def profile(request, username):
+    user = CustomUser.objects.filter(username=username).all()
+    return render(request, 'profile.html', {'user_object': user})
+
+
+class UpdateProfile(UpdateView):
+    model = CustomUser
+    form_class = CustomUserChangeForm
+    template_name = 'profile_editing.html'
+    success_url = '/'

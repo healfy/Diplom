@@ -18,7 +18,7 @@ class CustomUser(AbstractUser):
                                   auto_created=True)
 
     def __str__(self):
-        return self.email
+        return self.username
 
 
 class Bot(models.Model):
@@ -26,5 +26,6 @@ class Bot(models.Model):
                                 unique=True)
     bot_balance = models.IntegerField(verbose_name='Bot_stack', default=1000,
                                       auto_created=True)
-    bot_image = models.ImageField(upload_to='static/', blank=True, null=True,
+    bot_image = models.ImageField(upload_to='static/images', blank=True,
+                                  null=True,
                                   verbose_name='Bot_image')

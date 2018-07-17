@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Registration{% endblock %}
 {% block content %}
-    <form enctype="multipart/form-data" class="col s6" method="post">
+    <form enctype="multipart/form-data" class="form-row" method="post">
         {% csrf_token %}
         <div class="row">
             <div class="input-field col s6">
@@ -41,9 +41,10 @@
             </div>
         </div>
         <div class="row">
+            <label for="message">Register Me</label>
             <button type="submit" class="waves-effect waves-light btn">
                 <i class="material-icons right">cloud</i>
-                Зарегистрироваться
+                GO
             </button>
         </div>
     </form>

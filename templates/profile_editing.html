@@ -2,5 +2,49 @@
 {% load static %}
 {% block title %}Profile Edit{% endblock %}
 {% block content %}
-    {{ form.username }}
+    <form  class="form-row" method="post">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.username.label_tag }}
+                {{ form.username}}
+                <div class="fieldWrapper">
+                    {{ form.username.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name}}
+                <div class="fieldWrapper">
+                    {{ form.first_name.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name}}
+                <div class="fieldWrapper">
+                    {{ form.last_name.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=" col s6">
+                <span class="teal-text">{{ form.password }}</span>
+                <span class="teal-text">
+                    <a href="/password/">To change password go to this link</a>
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" class="waves-effect waves-light btn">
+                <i class="material-icons right">cloud</i>
+                Save
+            </button>
+        </div>
+    </form>
 {% endblock %}

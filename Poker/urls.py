@@ -16,8 +16,10 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
-
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from PokerApp import views
+from django.conf.urls.static import static
+from Poker import settings
 
 urlpatterns = [
     url(r'^$', views.main, name='index'),
@@ -25,6 +27,11 @@ urlpatterns = [
     url(r'^logout/$', views.LogoutView.as_view()),
     url(r'^login/$', views.LoginFormView.as_view()),
     url(r'^profile/(\w+)/$', views.profile),
-    url(r'^profile/(?P<pk>\d+)/$', views.UpdateProfile.as_view()),
-    path('admin/', admin.site.urls),
+    url(r'^lobby/(\w+)/$', views.game),
+    url(r'^(?P<pk>\d+)/$', views.UpdateProfile.as_view()),
+    url(r'^password/$', views.change_password, name='change_password'),
+    path('admin/', admin.site.urls)
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

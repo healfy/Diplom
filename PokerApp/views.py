@@ -1,11 +1,12 @@
-from django.contrib.auth import logout, login
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
+from django.contrib.auth import logout, login, update_session_auth_hash
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, UpdateView
 
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
-from PokerApp.models import CustomUser
+from PokerApp.models import CustomUser, Bot
 
 
 def main(request):
@@ -50,3 +51,24 @@ class UpdateProfile(UpdateView):
     form_class = CustomUserChangeForm
     template_name = 'profile_editing.html'
     success_url = '/'
+
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('index')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'change_password.html', {'form': form})
+
+
+def game(request, user):
+    user_active = CustomUser.objects.filter(username=user).all()
+    bots = Bot.objects.filter().all()
+    return render(request, 'game.html', locals())

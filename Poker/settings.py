@@ -123,6 +123,6 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'PokerApp/static'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = 'PokerApp/media'
+MEDIA_URL = '//'
+MEDIA_ROOT = 'PokerApp/static/images/'
 

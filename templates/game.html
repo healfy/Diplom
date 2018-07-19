@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Lobby{% endblock %}
+{% block content %}
+<div style="position:absolute">
+    <img src=" {% static 'fg.png' %}"/>
+</div>
+<div style="position:relative;">
+    {%  for user in user_active %}
+        <img width="70" height="60" src="{% static '/images/poker_pot.png' %}">
+        {{ user.username }} {{ user.balance }}$
+    {% endfor %}
+    <br>
+    {% for bot in bots %}
+        <img width="70" height="60" src="{% static '/images/poker_pot.png' %}">
+        <img width="70" height="60" src="{{ bot.bot_image.url }}"> {{ bot.bot_name }} {{ bot.bot_balance }}$<br>
+    {% endfor %}
+</div>
+{% endblock %}

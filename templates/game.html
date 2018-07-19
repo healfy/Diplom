@@ -2,18 +2,67 @@
 {% load static %}
 {% block title %}Lobby{% endblock %}
 {% block content %}
-<div style="position:absolute">
-    <img src=" {% static 'fg.png' %}"/>
-</div>
-<div style="position:relative;">
-    {%  for user in user_active %}
-        <img width="70" height="60" src="{% static '/images/poker_pot.png' %}">
-        {{ user.username }} {{ user.balance }}$
-    {% endfor %}
-    <br>
-    {% for bot in bots %}
-        <img width="70" height="60" src="{% static '/images/poker_pot.png' %}">
-        <img width="70" height="60" src="{{ bot.bot_image.url }}"> {{ bot.bot_name }} {{ bot.bot_balance }}$<br>
-    {% endfor %}
-</div>
+    <style>
+       table {width: 100%; border-spacing: 1px; background: #0f9d58 url({% static 'fgx-border.png'%}) repeat-y ; border-collapse: unset;}
+
+    </style>
+    <table style="align-content: space-around; color:#FAFAFA;background-position: center ">
+        <tr  style="align-content: center; height: 90px">
+            <td style="width: 20%"></td>
+            <td>
+                <span>
+                    {%  for user in user_active %}
+                        <img style="position: relative" width="70" height="60" src="{% static '/images/poker_pot.png' %}">
+                        <span>{{ user.username }} {{ user.balance }}$</span>
+                    {% endfor %}
+                </span>
+            </td>
+            <td></td>
+            <td>bot</td>
+            <td></td>
+        </tr>
+        <tr  style="align-content: center; height: 90px">
+            <td style="width: 20%"></td>
+            <td>SB</td>
+            <td></td>
+            <td>BB</td>
+            <td></td>
+        </tr>
+        <tr style="align-content: center; height: 70px" >
+            <td style="width: 20%"><span>bot</span></td>
+            <td colspan="3" style="text-align:center">Board</td>
+
+            <td style="width: 90px; height: 90px">bot </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr style="align-content: center; height: 70px" >
+            <td style="width: 20%"></td>
+            <td >bot</td>
+            <td ></td>
+            <td >bot</td>
+            <td></td>
+        </tr>
+    </table>
+{#{% for suit in suits %}#}
+{#    {% for rank in ranks %}#}
+{#        <img src="{% static '/images' %}/card_{{ suit }}{{ rank }}.png" width="50" style="border: 1px solid #333; border-radius: 5px; display: none">#}
+{#    {% endfor %}#}
+{#{% endfor %}#}
+{#<div style="position:relative;">#}
+{#    {%  for user in user_active %}#}
+{#        <img width="70" height="60" src="{% static '/images/poker_pot.png' %}">#}
+{#        {{ user.username }} {{ user.balance }}$#}
+{#    {% endfor %}#}
+{#    <br>#}
+{#    {% for bot in bots %}#}
+{#        <img width="70" height="60" src="{% static '/images/poker_pot.png' %}">#}
+{#        <img width="70" height="60" src="{{ bot.bot_image.url }}"> {{ bot.bot_name }} {{ bot.bot_balance }}$<br>#}
+{#    {% endfor %}#}
+{#</div>#}
 {% endblock %}

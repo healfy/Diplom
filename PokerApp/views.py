@@ -71,4 +71,6 @@ def change_password(request):
 def game(request, user):
     user_active = CustomUser.objects.filter(username=user).all()
     bots = Bot.objects.filter().all()
+    suits = ["S", "D", "H", "C"]
+    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
     return render(request, 'game.html', locals())

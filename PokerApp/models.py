@@ -29,3 +29,7 @@ class Bot(models.Model):
     bot_image = models.ImageField(upload_to='static/images', blank=True,
                                   null=True,
                                   verbose_name='Bot_image')
+
+
+# class CurrentGame(models.Model):
+

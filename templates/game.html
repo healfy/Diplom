@@ -6,47 +6,76 @@
        table {width: 100%; border-spacing: 1px; background: #0f9d58 url({% static 'fgx-border.png'%}) repeat-y ; border-collapse: unset;}
 
     </style>
-    <table style="align-content: space-around; color:#FAFAFA;background-position: center ">
-        <tr  style="align-content: center; height: 90px">
-            <td style="width: 20%"></td>
-            <td>
-                <span>
-                    {%  for user in user_active %}
-                        <img style="position: relative" width="70" height="60" src="{% static '/images/poker_pot.png' %}">
-                        <span>{{ user.username }} {{ user.balance }}$</span>
-                    {% endfor %}
-                </span>
+    <table style="align-content: center; color:#FAFAFA ">
+        <tr  style="align-content: left ; height: 60px">
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td >
+                {%  for user in user_active %}
+                    <img style="position: relative" width="40" height="30" src="{% static '/images/poker_pot.png' %}">
+                    <span>{{ user.username }} {{ user.balance }}$</span>
+                {% endfor %}
             </td>
-            <td></td>
-            <td>bot</td>
-            <td></td>
-        </tr>
-        <tr  style="align-content: center; height: 90px">
-            <td style="width: 20%"></td>
-            <td>SB</td>
-            <td></td>
-            <td>BB</td>
-            <td></td>
-        </tr>
-        <tr style="align-content: center; height: 70px" >
-            <td style="width: 20%"><span>bot</span></td>
-            <td colspan="3" style="text-align:center">Board</td>
-
-            <td style="width: 90px; height: 90px">bot </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr style="align-content: center; height: 70px" >
-            <td style="width: 20%"></td>
-            <td >bot</td>
+            <td ></td>
+            <td ></td>
             <td ></td>
             <td >bot</td>
+            <td ></td>
             <td></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+        </tr>
+        <tr  style="align-content: left ; height: 60px">
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%">SB</td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%">BB</td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+        </tr>
+        <tr  style="align-content: center; height: 90px">
+            <td style="width: 10%">Bot</td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%; text-align: center" colspan="5">Boooooooaaaaaarrrrrrrdddddd</td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%">Bot</td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+        </tr>
+       <tr  style="align-content: left ; height: 90px">
+            <td style="width: 5%"></td>
+            <td ></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+        </tr>
+    <tr  style="align-content: left ; height: 90px">
+            <td style="width: 5%"></td>
+            <td ></td>
+            <td style="width: 10%">Bot</td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%">Bot</td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
+            <td style="width: 10%"></td>
         </tr>
     </table>
 {#{% for suit in suits %}#}

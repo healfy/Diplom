@@ -31,5 +31,48 @@ class Bot(models.Model):
                                   verbose_name='Bot_image')
 
 
-# class CurrentGame(models.Model):
+class CurrentGame(models.Model):
+    bank = models.IntegerField(verbose_name='bank')
+    big_blind = models.IntegerField(verbose_name='big_blind')
+    small_blind = models.IntegerField(verbose_name='small_blind')
+    flop_1_card = models.CharField(blank=True, null=True, max_length=20)
+    flop_2_card = models.CharField(blank=True, null=True, max_length=20)
+    flop_3_card = models.CharField(blank=True, null=True, max_length=20)
+    turn = models.CharField(blank=True, null=True, max_length=20)
+    river = models.CharField(blank=True, null=True, max_length=20)
+    winner = models.CharField(verbose_name='winner', max_length=20)
 
+
+class GameWithPlayers(models.Model):
+    player_user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='user_player',
+        blank=True,
+        null=True
+        )
+    player_bot = models.ForeignKey(
+        Bot,
+        on_delete=models.CASCADE,
+        related_name='bot_player',
+        blank=True,
+        null=True
+    )
+
+    @property
+    def current_player(self):
+        return self.player_bot or self.player_user
+
+    game = models.ForeignKey(
+        CurrentGame,
+        on_delete=models.CASCADE,
+        related_name='game_property'
+    )
+    handled_card_1 = models.CharField(
+        max_length=20,
+        unique=True,
+        verbose_name='first_card')
+    handled_card_2 = models.CharField(
+        max_length=20,
+        unique=True,
+        verbose_name='second_card')

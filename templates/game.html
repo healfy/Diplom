@@ -78,20 +78,5 @@
             <td style="width: 10%"></td>
         </tr>
     </table>
-{#{% for suit in suits %}#}
-{#    {% for rank in ranks %}#}
-{#        <img src="{% static '/images' %}/card_{{ suit }}{{ rank }}.png" width="50" style="border: 1px solid #333; border-radius: 5px; display: none">#}
-{#    {% endfor %}#}
-{#{% endfor %}#}
-{#<div style="position:relative;">#}
-{#    {%  for user in user_active %}#}
-{#        <img width="70" height="60" src="{% static '/images/poker_pot.png' %}">#}
-{#        {{ user.username }} {{ user.balance }}$#}
-{#    {% endfor %}#}
-{#    <br>#}
-{#    {% for bot in bots %}#}
-{#        <img width="70" height="60" src="{% static '/images/poker_pot.png' %}">#}
-{#        <img width="70" height="60" src="{{ bot.bot_image.url }}"> {{ bot.bot_name }} {{ bot.bot_balance }}$<br>#}
-{#    {% endfor %}#}
-{#</div>#}
+
 {% endblock %}

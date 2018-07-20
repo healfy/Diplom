@@ -76,3 +76,5 @@ class GameWithPlayers(models.Model):
         max_length=20,
         unique=True,
         verbose_name='second_card')
+    seat = models.IntegerField(default=0)
+    current_stack = models.IntegerField(default=0)

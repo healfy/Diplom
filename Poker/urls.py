@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^logout/$', views.LogoutView.as_view()),
     url(r'^login/$', views.LoginFormView.as_view()),
     url(r'^profile/(\w+)/$', views.profile),
-    url(r'^lobby/(\w+)/$', views.game),
+    url(r'^lobby/$', views.StartGame.as_view()),
     url(r'^(?P<pk>\d+)/$', views.UpdateProfile.as_view()),
     url(r'^password/$', views.change_password, name='change_password'),
     path('admin/', admin.site.urls)

@@ -4,9 +4,9 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, UpdateView
-
+import os
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
-from PokerApp.models import CustomUser, Bot
+from PokerApp.models import CustomUser, Bot, GameWithPlayers, CurrentGame
 
 
 def main(request):
@@ -68,11 +68,80 @@ def change_password(request):
     return render(request, 'change_password.html', {'form': form})
 
 
-def game(request, user):
-    user_active = CustomUser.objects.filter(username=user).all()
+def game(request):
+    user_active = CustomUser.objects.filter().all()
     for field in user_active:
         print(field.username, field.last_name, field.first_name)
-    bots = Bot.objects.filter().all()
+
     suits = ["S", "D", "H", "C"]
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
     return render(request, 'game.html', locals())
+
+
+class StartGame(View):
+    def get(self, request):
+
+        # game_1_start = CurrentGame.objects.create(
+        #     small_blind=10,
+        #     big_blind=20,
+        #     bank=30
+        #
+        # )
+        # bot_6 = Bot.objects.create(
+        #     bot_name='Viktor',
+        #     bot_balance=1000,
+        #     bot_image=os.path.join('static', 'images', 'android-pegatina.png')
+        # )
+        # GameWithPlayers.objects.create(
+        #     player_user_id=1,
+        #     seat=1,
+        #     handled_card_1='SA',
+        #     handled_card_2='HA',
+        #     current_stack=50,
+        #     game=game_1_start
+        # )
+        # GameWithPlayers.objects.create(
+        #     player_bot_id=1,
+        #     seat=2,
+        #     handled_card_1='S6',
+        #     handled_card_2='D6',
+        #     current_stack=50,
+        #     game=game_1_start
+        #
+        # )
+        # GameWithPlayers.objects.create(
+        #     player_bot_id=2,
+        #     seat=3,
+        #     handled_card_1='H6',
+        #     handled_card_2='D7',
+        #     current_stack=50,
+        #     game=game_1_start
+        # )
+        # GameWithPlayers.objects.create(
+        #     player_bot_id=3,
+        #     seat=4,
+        #     handled_card_1='S9',
+        #     handled_card_2='D8',
+        #     current_stack=50,
+        #     game=game_1_start
+        # )
+        # GameWithPlayers.objects.create(
+        #     player_bot_id=4,
+        #     seat=5,
+        #     handled_card_1='D2',
+        #     handled_card_2='D3',
+        #     current_stack=50,
+        #     game=game_1_start
+        # )
+        # GameWithPlayers.objects.create(
+        #     player_bot=bot_6,
+        #     seat=6,
+        #     handled_card_1='CA',
+        #     handled_card_2='DK',
+        #     current_stack=50,
+        #     game=game_1_start
+        # )
+
+        context = GameWithPlayers.objects.filter().all()
+        return render(request, 'game.html', {'data': context})
+

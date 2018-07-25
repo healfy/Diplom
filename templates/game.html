@@ -3,26 +3,43 @@
 {% block title %}Lobby{% endblock %}
 {% block content %}
     <style>
-       table {width: 100%; border-spacing: 1px; background: #0f9d58 url({% static 'fgx-border.png'%}) repeat-y ; border-collapse: unset;}
-
+       table {
+           width: 100%; border-spacing:
+               1px;background: #0f9d58 url({% static 'fgx-border.png'%}) repeat-y;
+           border-collapse: unset; background-size: 90%;
+       }
     </style>
     <table style="align-content: center; color:#FAFAFA ">
-
         <tr  style="align-content: left ; height: 60px">
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
             <td >
             {% for user in data %}
                 {% if user.current_player.username %}
-                    <img style="" width="90" height="60" src="{% static 'images'%}/card_{{ user.handled_card_1 }}.png">
-                    <img style="" width="90" height="60" src="{% static 'images'%}/card_{{ user.handled_card_2 }}.png">
-                    {{ user.seat }}
+                    <img style="border-radius: 50px; width: 60px; height: 60px" src="{% static 'images/poker_pot.png' %}">
                     {{ user.current_player.username }}
+                    {{ user.current_stack }}
+                    {% if user.seat == 1 %}
+                        {{ user.game.small_blind }}
+                    {% endif %}
                 {% endif %}
             {% endfor %}
             </td>
-            <td ></td>
-            <td ></td>
+            <td >
+                {% for user in data %}
+                    {% if user.current_player.username %}
+                    <img style="" width="90" height="60" src="{% static 'images'%}/card_{{ user.handled_card_1 }}.png">
+                    {% endif %}
+                {% endfor %}
+
+            </td>
+            <td >
+                {% for user in data %}
+                    {% if user.current_player.username %}
+                    <img style="" width="90" height="60" src="{% static 'images'%}/card_{{ user.handled_card_2 }}.png">
+                    {% endif %}
+                {% endfor %}
+            </td>
             <td ></td>
             <td >
                 {% for user in data %}
@@ -30,6 +47,7 @@
                         <img style="border-radius: 50px" width="90" height="60" src="{{ user.current_player.bot_image.url }}">
                         {{ user.current_stack}}
                         {{ user.current_player.bot_name }}
+                        {{ user.game.big_blind}}
                     {% endif %}
                 {% endfor %}
             </td>
@@ -43,22 +61,11 @@
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
             <td style="width: 10%">
-                {% for user in data %}
-                    {% if user.seat == 1 %}
-                        {{ user.game.small_blind}}
-                    {% endif %}
-                {% endfor %}
             </td>
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
-            <td style="width: 10%">
-               {% for user in data %}
-                    {% if user.seat == 2 %}
-                        {{ user.game.big_blind}}
-                    {% endif %}
-                {% endfor %}
-            </td>
+            <td style="width: 10%"></td>
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
@@ -90,7 +97,7 @@
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
         </tr>
-       <tr  style="align-content: left ; height: 90px">
+        <tr  style="align-content: left ; height: 90px">
             <td style="width: 5%"></td>
             <td ></td>
             <td style="width: 10%"></td>
@@ -104,7 +111,7 @@
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
         </tr>
-    <tr  style="align-content: left ; height: 90px">
+        <tr  style="align-content: left ; height: 90px">
             <td style="width: 5%"></td>
             <td ></td>
             <td style="width: 10%">{% for user in data %}
@@ -132,8 +139,8 @@
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
         </tr>
-
     </table>
-
-
+    <button name="fold_button" class="waves-effect waves-light btn-small" type="submit">Fold</button>
+    <button name="call_button" class="waves-effect waves-light btn-small" type="submit">Call</button>
+    <button name="raise_button" class="waves-effect waves-light btn-small" type="submit">Raise</button>
 {% endblock %}

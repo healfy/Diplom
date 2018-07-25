@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, UpdateView
+import itertools
 import os
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
 from PokerApp.models import CustomUser, Bot, GameWithPlayers, CurrentGame
@@ -72,13 +73,19 @@ def game(request):
     user_active = CustomUser.objects.filter().all()
     for field in user_active:
         print(field.username, field.last_name, field.first_name)
-
-    suits = ["S", "D", "H", "C"]
-    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
     return render(request, 'game.html', locals())
 
 
 class StartGame(View):
+    suits = ["S", "D", "H", "C"]
+    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+    cards_tuple = []
+
+    for i in itertools.product(ranks, suits):
+        cards_tuple.append(i)
+
+    community_cards = [cards[0] + cards[1] for cards in cards_tuple]
+
     def get(self, request):
 
         # game_1_start = CurrentGame.objects.create(
@@ -86,11 +93,6 @@ class StartGame(View):
         #     big_blind=20,
         #     bank=30
         #
-        # )
-        # bot_6 = Bot.objects.create(
-        #     bot_name='Viktor',
-        #     bot_balance=1000,
-        #     bot_image=os.path.join('static', 'images', 'android-pegatina.png')
         # )
         # GameWithPlayers.objects.create(
         #     player_user_id=1,
@@ -134,7 +136,7 @@ class StartGame(View):
         #     game=game_1_start
         # )
         # GameWithPlayers.objects.create(
-        #     player_bot=bot_6,
+        #     player_bot_id=5,
         #     seat=6,
         #     handled_card_1='CA',
         #     handled_card_2='DK',

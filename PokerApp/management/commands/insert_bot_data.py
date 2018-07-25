@@ -22,3 +22,7 @@ class Command(BaseCommand):
             bot_name='Nikola',
             bot_image=os.path.join('static', 'images', 'android-pegatina.png')
         )
+        Bot.objects.create(
+            bot_name='Viktor',
+            bot_image=os.path.join('static', 'images', 'android-pegatina.png')
+        )

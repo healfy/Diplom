@@ -71,13 +71,6 @@ def change_password(request):
     return render(request, 'change_password.html', {'form': form})
 
 
-def game(request):
-    user_active = CustomUser.objects.filter().all()
-    for field in user_active:
-        print(field.username, field.last_name, field.first_name)
-    return render(request, 'game.html', locals())
-
-
 class StartGame(View):
     suits = ["S", "D", "H", "C"]
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]

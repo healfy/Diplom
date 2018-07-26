@@ -1,3 +1,5 @@
+import random
+
 from django.contrib import messages
 from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -81,7 +83,7 @@ class StartGame(View):
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
     cards_tuple = []
 
-    for i in itertools.product(ranks, suits):
+    for i in itertools.product(suits, ranks):
         cards_tuple.append(i)
 
     community_cards = [cards[0] + cards[1] for cards in cards_tuple]
@@ -143,7 +145,12 @@ class StartGame(View):
         #     current_stack=50,
         #     game=game_1_start
         # )
-
-        context = GameWithPlayers.objects.filter().all()
-        return render(request, 'game.html', {'data': context})
+        card1 = random.choice(self.community_cards)
+        self.community_cards.remove(card1)
+        card2 = random.choice(self.community_cards)
+        self.community_cards.remove(card2)
+        card3 = random.choice(self.community_cards)
+        self.community_cards.remove(card3)
+        data = GameWithPlayers.objects.filter().all()
+        return render(request, 'game.html', locals())
 

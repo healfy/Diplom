@@ -70,11 +70,11 @@ class GameWithPlayers(models.Model):
     )
     handled_card_1 = models.CharField(
         max_length=20,
-        unique=True,
+        unique=False,
         verbose_name='first_card')
     handled_card_2 = models.CharField(
         max_length=20,
-        unique=True,
+        unique=False,
         verbose_name='second_card')
     seat = models.IntegerField(default=0)
     current_stack = models.IntegerField(default=0)

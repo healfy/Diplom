@@ -7,13 +7,13 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, UpdateView
 import itertools
-import os
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
-from PokerApp.models import CustomUser, Bot, GameWithPlayers, CurrentGame
+from PokerApp.models import CustomUser, GameWithPlayers, CurrentGame
 
 
 def main(request):
-    return render(request, 'index.html')
+    data = CurrentGame.objects.last()
+    return render(request, 'base.html', {'game_data': data})
 
 
 class RegisterFormView(FormView):
@@ -72,78 +72,49 @@ def change_password(request):
 
 
 class StartGame(View):
-    suits = ["S", "D", "H", "C"]
-    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
-    cards_tuple = []
-
-    for i in itertools.product(suits, ranks):
-        cards_tuple.append(i)
-
-    community_cards = [cards[0] + cards[1] for cards in cards_tuple]
 
     def get(self, request):
+        suits = ["S", "D", "H", "C"]
+        ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K",
+                 "A"]
+        cards_tuple = []
 
-        # game_1_start = CurrentGame.objects.create(
-        #     small_blind=10,
-        #     big_blind=20,
-        #     bank=30
-        #
-        # )
-        # GameWithPlayers.objects.create(
-        #     player_user_id=1,
-        #     seat=1,
-        #     handled_card_1='SA',
-        #     handled_card_2='HA',
-        #     current_stack=50,
-        #     game=game_1_start
-        # )
-        # GameWithPlayers.objects.create(
-        #     player_bot_id=1,
-        #     seat=2,
-        #     handled_card_1='S6',
-        #     handled_card_2='D6',
-        #     current_stack=50,
-        #     game=game_1_start
-        #
-        # )
-        # GameWithPlayers.objects.create(
-        #     player_bot_id=2,
-        #     seat=3,
-        #     handled_card_1='H6',
-        #     handled_card_2='D7',
-        #     current_stack=50,
-        #     game=game_1_start
-        # )
-        # GameWithPlayers.objects.create(
-        #     player_bot_id=3,
-        #     seat=4,
-        #     handled_card_1='S9',
-        #     handled_card_2='D8',
-        #     current_stack=50,
-        #     game=game_1_start
-        # )
-        # GameWithPlayers.objects.create(
-        #     player_bot_id=4,
-        #     seat=5,
-        #     handled_card_1='D2',
-        #     handled_card_2='D3',
-        #     current_stack=50,
-        #     game=game_1_start
-        # )
-        # GameWithPlayers.objects.create(
-        #     player_bot_id=5,
-        #     seat=6,
-        #     handled_card_1='CA',
-        #     handled_card_2='DK',
-        #     current_stack=50,
-        #     game=game_1_start
-        # )
-        card1 = random.choice(self.community_cards)
-        self.community_cards.remove(card1)
-        card2 = random.choice(self.community_cards)
-        self.community_cards.remove(card2)
-        card3 = random.choice(self.community_cards)
-        self.community_cards.remove(card3)
-        data = GameWithPlayers.objects.filter().all()
+        for i in itertools.product(suits, ranks):
+            cards_tuple.append(i)
+
+        community_cards = [cards[0] + cards[1] for cards in cards_tuple]
+        random.shuffle(community_cards)
+
+        game_1_start = CurrentGame.objects.create(
+            small_blind=1,
+            big_blind=2,
+            bank=3
+        )
+
+        GameWithPlayers.objects.create(
+            player_user_id=1,
+            seat=1,
+            handled_card_1=community_cards.pop(),
+            handled_card_2=community_cards.pop(),
+            current_stack=50,
+            game=game_1_start
+        )
+
+        for i in range(2, 7):
+            GameWithPlayers.objects.create(
+                player_bot_id=i-1,
+                seat=i,
+                handled_card_1=community_cards.pop(),
+                handled_card_2=community_cards.pop(),
+                current_stack=50,
+                game=game_1_start
+
+            )
+
+        card1 = community_cards.pop()
+        card2 = community_cards.pop()
+        card3 = community_cards.pop()
+        game_data = CurrentGame.objects.last()
+        data = GameWithPlayers.objects.filter(game=game_1_start).all()
         return render(request, 'game.html', locals())
 

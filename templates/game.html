@@ -22,9 +22,6 @@
                              src="{% static 'images/poker_pot.png' %}">
                         {{ user.current_player.username }}
                         {{ user.current_stack }}
-                        {% if user.seat == 1 %}
-                            {{ user.game.small_blind }}
-                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </td>
@@ -55,7 +52,6 @@
                              src="{{ user.current_player.bot_image.url }}">
                         {{ user.current_stack }}
                         {{ user.current_player.bot_name }}
-                        {{ user.game.big_blind }}
                     {% endif %}
                 {% endfor %}
             </td>
@@ -122,7 +118,8 @@
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
-            <td style="width: 10%"></td>
+            <td style="width: 10%"><img style="border-radius: 50px; width: 60px; height: 60px"
+                             src="{% static 'images/poker_pot.png' %}">{{ game_data.bank }}</td>
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
             <td style="width: 10%"></td>
@@ -191,15 +188,15 @@
             </td>
             <td style="width: 10%">
                 <input id="raise_number" type="number"
-                        {% for game in data %}
-                            min="{{ game.game.big_blind }}" value="{{ game.game.big_blind }}"
-                        {% endfor %}
+
+                            min="{{ game_data.big_blind }}" value="{{ game_data.big_blind }}"
+
                        style="background: #FAFAFA; border-radius: 60px;
                     text-align: center; font-size: 120%;">
             </td>
-            x
+
             <td style="width: 10%">
-                bank {% for dt in data %}{{ dt.game.bank }}{% endfor %}
+
             </td>
             <td style="width: 10%"></td>
         </tr>

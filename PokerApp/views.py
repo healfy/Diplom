@@ -5,7 +5,7 @@ from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, RedirectView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
 from PokerApp.models import CustomUser, GameWithPlayers, CurrentGame
@@ -79,8 +79,8 @@ class StartGame(View):
                  "A"]
         cards_tuple = []
 
-        for i in itertools.product(suits, ranks):
-            cards_tuple.append(i)
+        for _ in itertools.product(suits, ranks):
+            cards_tuple.append(_)
 
         community_cards = [cards[0] + cards[1] for cards in cards_tuple]
         random.shuffle(community_cards)
@@ -88,7 +88,10 @@ class StartGame(View):
         game_1_start = CurrentGame.objects.create(
             small_blind=1,
             big_blind=2,
-            bank=3
+            bank=3,
+            flop_1_card=community_cards.pop(),
+            flop_2_card=community_cards.pop(),
+            flop_3_card=community_cards.pop()
         )
 
         GameWithPlayers.objects.create(
@@ -111,10 +114,6 @@ class StartGame(View):
 
             )
 
-        card1 = community_cards.pop()
-        card2 = community_cards.pop()
-        card3 = community_cards.pop()
         game_data = CurrentGame.objects.last()
         data = GameWithPlayers.objects.filter(game=game_1_start).all()
         return render(request, 'game.html', locals())
-

@@ -8,7 +8,7 @@ from django.views import View
 from django.views.generic import FormView, UpdateView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
-from PokerApp.models import CustomUser, GameWithPlayers, CurrentGame
+from PokerApp.models import CustomUser, GameWithPlayers, CurrentGame, Bot
 
 
 def main(request):
@@ -73,7 +73,14 @@ def change_password(request):
 
 class StartGame(View):
 
-    def get(self, request):
+    def get(self, request, username):
+
+        user = CustomUser.objects.filter(username=username).all()
+        bots = Bot.objects.filter().all()
+        return render(request, 'lobby.html', locals())
+
+    def post(self, request, username):
+
         suits = ["S", "D", "H", "C"]
         ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K",
                  "A"]
@@ -84,6 +91,8 @@ class StartGame(View):
 
         community_cards = [cards[0] + cards[1] for cards in cards_tuple]
         random.shuffle(community_cards)
+
+        current_user = CustomUser.objects.get(username=username)
 
         game_1_start = CurrentGame.objects.create(
             small_blind=1,
@@ -97,8 +106,8 @@ class StartGame(View):
         )
 
         GameWithPlayers.objects.create(
-            player_user_id=1,
-            seat=1,
+            player_user=current_user,
+            position=1,
             handled_card_1=community_cards.pop(),
             handled_card_2=community_cards.pop(),
             current_stack=50,
@@ -108,31 +117,17 @@ class StartGame(View):
         for i in range(1, 6):
             GameWithPlayers.objects.create(
                 player_bot_id=i,
-                seat=i+1,
                 handled_card_1=community_cards.pop(),
                 handled_card_2=community_cards.pop(),
+                position=i+1,
                 current_stack=50,
                 game=game_1_start
-
             )
 
         game_data = CurrentGame.objects.last()
         data = GameWithPlayers.objects.filter(game=game_1_start).all()
 
-        for player in data:
-            if player.seat == game_data.small_blind_seat:
-                player.current_stack =\
-                    player.current_stack - game_data.small_blind
-                player.save()
-            elif player.seat == game_data.big_blind_seat:
-                player.current_stack =\
-                    player.current_stack - game_data.big_blind
-                player.save()
-
         return render(request, 'game.html', locals())
-
-
-    # def post(self, request):
 
 
 def preflop_actions(list_of_actions):

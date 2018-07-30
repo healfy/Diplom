@@ -35,8 +35,6 @@ class CurrentGame(models.Model):
     bank = models.IntegerField(verbose_name='bank')
     big_blind = models.IntegerField(verbose_name='big_blind')
     small_blind = models.IntegerField(verbose_name='small_blind')
-    big_blind_seat = models.IntegerField(default=2)
-    small_blind_seat = models.IntegerField(default=1)
     flop_1_card = models.CharField(blank=True, null=True, max_length=20)
     flop_2_card = models.CharField(blank=True, null=True, max_length=20)
     flop_3_card = models.CharField(blank=True, null=True, max_length=20)
@@ -78,7 +76,7 @@ class GameWithPlayers(models.Model):
         max_length=20,
         unique=False,
         verbose_name='second_card')
-    seat = models.IntegerField(default=0)
+    position = models.IntegerField(default=0)
     current_stack = models.IntegerField(default=0)
     action_preflop = models.CharField(max_length=20, null=True, blank=True)
     action_flop = models.CharField(max_length=20, null=True, blank=True)

@@ -18,44 +18,23 @@
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td>
-                    {% for user in data %}
-                        {% if user.player_user %}
-                            {% if user.current_player.username %}
-                                <img style="border-radius: 50px; width: 60px; height: 60px"
+                    {% for usr in user %}
+                        <img style="border-radius: 50px; width: 60px; height: 60px"
                                      src="{% static 'images/poker_pot.png' %}">
-                                {{ user.current_player.username }}
-                                {{ user.current_stack }}
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for user in data %}
-                        {% if user.current_player.username %}
-                            <img style="" width="90" height="60"
-                                 src="{% static 'images' %}/card_{{ user.handled_card_1 }}.png">
-                        {% endif %}
-                    {% endfor %}
-
-                </td>
-                <td>
-                    {% for user in data %}
-                        {% if user.current_player.username %}
-                            <img style="" width="90" height="60"
-                                 src="{% static 'images' %}/card_{{ user.handled_card_2 }}.png">
-                        {% endif %}
+                        {{ usr.username }}
                     {% endfor %}
                 </td>
                 <td></td>
+                <td> </td>
                 <td></td>
                 <td>
-                    {% for user in data %}
-                        {% if user.player_bot_id == 1 %}
+                </td>
+                <td>
+                    {% for bot in bots %}
+                        {% if bot.id == 1 %}
                             <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
-                            {{ user.current_player.bot_name }}
-                            {{ user.position }}
+                                 src="{{ bot.bot_image.url }}">
+                            {{ bot.bot_name }}
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -81,34 +60,30 @@
             </tr>
             <tr style="align-content: center; height: 90px">
                 <td style="width: 10%">
-                    {% for user in data %}
-                        {% if user.current_player.id == 2 %}
+                    {% for bot in bots %}
+                        {% if bot.id == 2 %}
                             <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
-                            {{ user.current_player.bot_name }}
+                                 src="{{ bot.bot_image.url }}">
+                            {{ bot.bot_name }}
                         {% endif %}
                     {% endfor %}
                 </td>
                 <td style="width: 10%"></td>
 
                 <td style="width: 10%; text-align: center" colspan="6">
-                    <img style="" width="100" height="85"
-                         src="{% static 'images' %}/card_{{ game_data.flop_1_card }}.png">
-                    <img style="" width="100" height="85"
-                         src="{% static 'images' %}/card_{{ game_data.flop_2_card }}.png">
-                    <img style="" width="100" height="85"
-                         src="{% static 'images' %}/card_{{ game_data.flop_3_card  }}.png">
+                    <button name="start_button"
+                            class="waves-effect waves-light btn-large"
+                            type="submit" value="call">Start Game
+                    </button>
                 </td>
                 <td style="width: 10%"></td>
 
                 <td style="width: 10%">
-                    {% for user in data %}
-                        {% if user.current_player.id == 3 %}
+                    {% for bot in bots %}
+                        {% if bot.id == 3 %}
                             <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
-                            {{ user.current_player.bot_name }}
+                                 src="{{ bot.bot_image.url }}">
+                            {{ bot.bot_name }}
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -122,41 +97,8 @@
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
-                <td style="width: 10%"><img style="border-radius: 50px; width: 60px; height: 60px"
-                                 src="{% static 'images/poker_pot.png' %}">{{ game_data.bank }}</td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-            </tr>
-            <tr style="align-content: left ; height: 90px">
-                <td style="width: 5%"></td>
-                <td></td>
-                <td style="width: 10%">
-                    {% for user in data %}
-                        {% if user.current_player.id == 4 %}
-                            <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
-                            {{ user.current_player.bot_name }}
-                        {% endif %}
-                    {% endfor %}
-                </td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%">
-                    {% for user in data %}
-                        {% if user.current_player.id == 5 %}
-                            <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
-                            {{ user.current_player.bot_name }}
-                        {% endif %}
-                    {% endfor %}
-                </td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
@@ -165,38 +107,50 @@
             <tr style="align-content: left ; height: 90px">
                 <td style="width: 5%"></td>
                 <td></td>
+                <td style="width: 10%">
+                    {% for bot in bots %}
+                        {% if bot.id == 4 %}
+                            <img style="border-radius: 50px" width="90" height="60"
+                                 src="{{ bot.bot_image.url }}">
+                            {{ bot.bot_name }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%">
-                    <button name="fold_button"
-                            class="waves-effect waves-light btn-small"
-                            type="submit" value="fold">Fold
-                    </button>
+                    {% for bot in bots %}
+                        {% if bot.id == 5 %}
+                            <img style="border-radius: 50px" width="90" height="60"
+                                 src="{{ bot.bot_image.url }}">
+                            {{ bot.bot_name }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%"></td>
+            </tr>
+            <tr style="align-content: left ; height: 90px">
+                <td style="width: 5%"></td>
+                <td></td>
+                <td style="width: 10%"></td>
+                <td style="width: 10%">
                 </td>
                 <td style="width: 10%">
-                    <button name="call_button"
-                            class="waves-effect waves-light btn-small"
-                            type="submit" value="call">Call
-                    </button>
-                </td>
-                <td style="width: 10%">
-                    <button name="check_button"
-                            class="waves-effect waves-light btn-small"
-                            type="submit" value="check">Check
-                    </button>
-                </td>
-                <td style="width: 10%">
-                    <button name="raise_button"
-                            class="waves-effect waves-light btn-small"
-                            type="submit" value="raise">Raise
-                    </button>
-                </td>
-                <td style="width: 10%">
-                    <input id="raise_number" type="number" step="{{ game_data.big_blind }}"
 
-                                min="{{ game_data.big_blind }}" value="{{ game_data.big_blind|add:game_data.big_blind }}"
+                </td>
+                <td style="width: 10%">
 
-                           style="background: #FAFAFA; border-radius: 60px;
-                        text-align: center; font-size: 120%;">
+                </td>
+                <td style="width: 10%">
+
+                </td>
+                <td style="width: 10%">
+
                 </td>
 
                 <td style="width: 10%">

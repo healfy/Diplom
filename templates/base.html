@@ -20,8 +20,8 @@
             <div class="nav-wrapper" >
               <a href="/" class="brand-logo">JoyCasino</a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
-                  {% if user.is_active %}
-                      <li><a href="/lobby/"> Lobby </a></li>
+                  {% if user.is_active or user.user.is_authenticated %}
+                      <li><a href="/lobby/{{ user }}/"> Lobby </a></li>
                       <li><a href="/profile/{{ user }}/">{{ user }}</a></li>
                   {% else %}
                       <li><a href="/login/"> Вход </a></li>

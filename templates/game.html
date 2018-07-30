@@ -19,12 +19,15 @@
                 <td style="width: 10%"></td>
                 <td>
                     {% for user in data %}
-                        {% if user.player_user %}
-                            {% if user.current_player.username %}
-                                <img style="border-radius: 50px; width: 60px; height: 60px"
+                        {% if user.position == 1 %}
+                            <img style="border-radius: 50px; width: 60px; height: 60px"
                                      src="{% static 'images/poker_pot.png' %}">
-                                {{ user.current_player.username }}
-                                {{ user.current_stack }}
+                            {{ user.current_stack }}
+                            {{ user.current_player.username }}
+                            {% if user.position == user.game.small_blind_seat %}
+                                {{ user.game.small_blind }}
+                            {% elif user.position == user.game.big_blind_seat %}
+                                {{ user.game.big_blind }}
                             {% endif %}
                         {% endif %}
                     {% endfor %}
@@ -55,7 +58,11 @@
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
                             {{ user.current_player.bot_name }}
-                            {{ user.position }}
+                            {% if user.position == user.game.small_blind_seat %}
+                                {{ user.game.small_blind }}
+                            {% elif user.position == user.game.big_blind_seat %}
+                                {{ user.game.big_blind }}
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -87,6 +94,11 @@
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
                             {{ user.current_player.bot_name }}
+                            {% if user.position == user.game.small_blind_seat %}
+                                {{ user.game.small_blind }}
+                            {% elif user.position == user.game.big_blind_seat %}
+                                {{ user.game.big_blind }}
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -109,6 +121,11 @@
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
                             {{ user.current_player.bot_name }}
+                            {% if user.position == user.game.small_blind_seat %}
+                                {{ user.game.small_blind }}
+                            {% elif user.position == user.game.big_blind_seat %}
+                                {{ user.game.big_blind }}
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -140,6 +157,11 @@
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
                             {{ user.current_player.bot_name }}
+                            {% if user.position == user.game.small_blind_seat %}
+                                {{ user.game.small_blind }}
+                            {% elif user.position == user.game.big_blind_seat %}
+                                {{ user.game.big_blind }}
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -154,6 +176,11 @@
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
                             {{ user.current_player.bot_name }}
+                            {% if user.position == user.game.small_blind_seat %}
+                                {{ user.game.small_blind }}
+                            {% elif user.position == user.game.big_blind_seat %}
+                                {{ user.game.big_blind }}
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>

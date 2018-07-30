@@ -20,7 +20,7 @@
                 <td>
                     {% for user in data %}
                         {% if user.position == 1 %}
-                            <img style="border-radius: 50px; width: 60px; height: 60px"
+                            <img style="border-radius: 20px; width: 60px; height: 60px"
                                      src="{% static 'images/poker_pot.png' %}">
                             {{ user.current_stack }}
                             {{ user.current_player.username }}
@@ -35,7 +35,7 @@
                 <td>
                     {% for user in data %}
                         {% if user.current_player.username %}
-                            <img style="" width="90" height="60"
+                            <img style="border-radius: 5px" width="78" height="100"
                                  src="{% static 'images' %}/card_{{ user.handled_card_1 }}.png">
                         {% endif %}
                     {% endfor %}
@@ -44,7 +44,7 @@
                 <td>
                     {% for user in data %}
                         {% if user.current_player.username %}
-                            <img style="" width="90" height="60"
+                            <img style="border-radius: 5px" width="78" height="100"
                                  src="{% static 'images' %}/card_{{ user.handled_card_2 }}.png">
                         {% endif %}
                     {% endfor %}
@@ -105,11 +105,11 @@
                 <td style="width: 10%"></td>
 
                 <td style="width: 10%; text-align: center" colspan="6">
-                    <img style="" width="100" height="85"
+                    <img style="" width="78" height="100"
                          src="{% static 'images' %}/card_{{ game_data.flop_1_card }}.png">
-                    <img style="" width="100" height="85"
+                    <img style="" width="78" height="100"
                          src="{% static 'images' %}/card_{{ game_data.flop_2_card }}.png">
-                    <img style="" width="100" height="85"
+                    <img style="" width="78" height="100"
                          src="{% static 'images' %}/card_{{ game_data.flop_3_card  }}.png">
                 </td>
                 <td style="width: 10%"></td>
@@ -139,7 +139,7 @@
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
-                <td style="width: 10%"><img style="border-radius: 50px; width: 60px; height: 60px"
+                <td style="width: 10%"><img style="border-radius: 20px; width: 60px; height: 60px"
                                  src="{% static 'images/poker_pot.png' %}">{{ game_data.bank }}</td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>

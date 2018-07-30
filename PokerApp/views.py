@@ -5,7 +5,7 @@ from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import FormView, UpdateView, RedirectView
+from django.views.generic import FormView, UpdateView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
 from PokerApp.models import CustomUser, GameWithPlayers, CurrentGame
@@ -91,7 +91,9 @@ class StartGame(View):
             bank=3,
             flop_1_card=community_cards.pop(),
             flop_2_card=community_cards.pop(),
-            flop_3_card=community_cards.pop()
+            flop_3_card=community_cards.pop(),
+            turn=community_cards.pop(),
+            river=community_cards.pop()
         )
 
         GameWithPlayers.objects.create(
@@ -103,10 +105,10 @@ class StartGame(View):
             game=game_1_start
         )
 
-        for i in range(2, 7):
+        for i in range(1, 6):
             GameWithPlayers.objects.create(
-                player_bot_id=i-1,
-                seat=i,
+                player_bot_id=i,
+                seat=i+1,
                 handled_card_1=community_cards.pop(),
                 handled_card_2=community_cards.pop(),
                 current_stack=50,
@@ -116,4 +118,24 @@ class StartGame(View):
 
         game_data = CurrentGame.objects.last()
         data = GameWithPlayers.objects.filter(game=game_1_start).all()
+
+        for player in data:
+            if player.seat == game_data.small_blind_seat:
+                player.current_stack =\
+                    player.current_stack - game_data.small_blind
+                player.save()
+            elif player.seat == game_data.big_blind_seat:
+                player.current_stack =\
+                    player.current_stack - game_data.big_blind
+                player.save()
+
         return render(request, 'game.html', locals())
+
+
+    # def post(self, request):
+
+
+def preflop_actions(list_of_actions):
+    if len(list_of_actions) == 6:
+        return True
+    return False

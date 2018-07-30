@@ -19,11 +19,13 @@
                 <td style="width: 10%"></td>
                 <td>
                     {% for user in data %}
-                        {% if user.current_player.username %}
-                            <img style="border-radius: 50px; width: 60px; height: 60px"
-                                 src="{% static 'images/poker_pot.png' %}">
-                            {{ user.current_player.username }}
-                            {{ user.current_stack }}
+                        {% if user.seat == 1 %}
+                            {% if user.current_player.username %}
+                                <img style="border-radius: 50px; width: 60px; height: 60px"
+                                     src="{% static 'images/poker_pot.png' %}">
+                                {{ user.current_player.username }}
+                                {{ user.current_stack }}
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -167,31 +169,31 @@
                 <td style="width: 10%">
                     <button name="fold_button"
                             class="waves-effect waves-light btn-small"
-                            type="submit">Fold
+                            type="submit" value="fold">Fold
                     </button>
                 </td>
                 <td style="width: 10%">
                     <button name="call_button"
                             class="waves-effect waves-light btn-small"
-                            type="">Call
+                            type="submit" value="call">Call
                     </button>
                 </td>
                 <td style="width: 10%">
                     <button name="check_button"
                             class="waves-effect waves-light btn-small"
-                            type="">Check
+                            type="submit" value="check">Check
                     </button>
                 </td>
                 <td style="width: 10%">
                     <button name="raise_button"
                             class="waves-effect waves-light btn-small"
-                            type="">Raise
+                            type="submit" value="raise">Raise
                     </button>
                 </td>
                 <td style="width: 10%">
-                    <input id="raise_number" type="number"
+                    <input id="raise_number" type="number" step="{{ game_data.big_blind }}"
 
-                                min="{{ game_data.big_blind }}" value="{{ game_data.big_blind }}"
+                                min="{{ game_data.big_blind }}" value="{{ game_data.big_blind|add:game_data.big_blind }}"
 
                            style="background: #FAFAFA; border-radius: 60px;
                         text-align: center; font-size: 120%;">

@@ -50,7 +50,7 @@
                 <td></td>
                 <td>
                     {% for user in data %}
-                        {% if user.player_bot_id == 1 %}
+                        {% if user.position == 2 %}
                             <img style="border-radius: 50px" width="90" height="60"
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
@@ -82,7 +82,7 @@
             <tr style="align-content: center; height: 90px">
                 <td style="width: 10%">
                     {% for user in data %}
-                        {% if user.current_player.id == 2 %}
+                        {% if user.position == 6 %}
                             <img style="border-radius: 50px" width="90" height="60"
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
@@ -104,7 +104,7 @@
 
                 <td style="width: 10%">
                     {% for user in data %}
-                        {% if user.current_player.id == 3 %}
+                        {% if user.position == 3 %}
                             <img style="border-radius: 50px" width="90" height="60"
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
@@ -135,7 +135,7 @@
                 <td></td>
                 <td style="width: 10%">
                     {% for user in data %}
-                        {% if user.current_player.id == 4 %}
+                        {% if user.position == 5 %}
                             <img style="border-radius: 50px" width="90" height="60"
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}
@@ -149,7 +149,7 @@
                 <td style="width: 10%"></td>
                 <td style="width: 10%">
                     {% for user in data %}
-                        {% if user.current_player.id == 5 %}
+                        {% if user.position == 4 %}
                             <img style="border-radius: 50px" width="90" height="60"
                                  src="{{ user.current_player.bot_image.url }}">
                             {{ user.current_stack }}

@@ -35,6 +35,8 @@ class CurrentGame(models.Model):
     bank = models.IntegerField(verbose_name='bank')
     big_blind = models.IntegerField(verbose_name='big_blind')
     small_blind = models.IntegerField(verbose_name='small_blind')
+    small_blind_seat = models.IntegerField(default=0)
+    big_blind_seat = models.IntegerField(default=0)
     flop_1_card = models.CharField(blank=True, null=True, max_length=20)
     flop_2_card = models.CharField(blank=True, null=True, max_length=20)
     flop_3_card = models.CharField(blank=True, null=True, max_length=20)

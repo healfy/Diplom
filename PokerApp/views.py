@@ -73,6 +73,28 @@ def change_password(request):
 
 class StartGame(View):
 
+    list_of_seats = [6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
+                     ]
+
     def get(self, request, username):
 
         user = CustomUser.objects.filter(username=username).all()
@@ -94,9 +116,18 @@ class StartGame(View):
 
         current_user = CustomUser.objects.get(username=username)
 
+        seat_1 = self.list_of_seats.pop()
+        seat_2 = 0
+        if seat_1 == 6:
+            seat_2 = 1
+        else:
+            seat_2 = seat_1 + 1
+
         game_1_start = CurrentGame.objects.create(
             small_blind=1,
             big_blind=2,
+            small_blind_seat=seat_1,
+            big_blind_seat=seat_2,
             bank=3,
             flop_1_card=community_cards.pop(),
             flop_2_card=community_cards.pop(),
@@ -126,6 +157,14 @@ class StartGame(View):
 
         game_data = CurrentGame.objects.last()
         data = GameWithPlayers.objects.filter(game=game_1_start).all()
+
+        for player in data:
+            if game_data.small_blind_seat == player.position:
+                player.current_stack = \
+                    player.current_stack - game_data.small_blind
+            elif game_data.big_blind_seat == player.position:
+                player.current_stack = \
+                    player.current_stack - game_data.big_blind
 
         return render(request, 'game.html', locals())
 

@@ -26,3 +26,6 @@ class Command(BaseCommand):
             bot_name='Viktor',
             bot_image=os.path.join('static', 'images', 'android-pegatina.png')
         )
+        CountSeat.objects.create(
+            seat_number=0
+        )

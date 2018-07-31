@@ -3,12 +3,14 @@ import random
 from django.contrib import messages
 from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.db.models import F
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, UpdateView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
-from PokerApp.models import CustomUser, GameWithPlayers, CurrentGame, Bot
+from PokerApp.models import CustomUser, GameWithPlayers, CurrentGame, Bot, \
+    CountSeat
 
 
 def main(request):
@@ -73,18 +75,6 @@ def change_password(request):
 
 class StartGame(View):
 
-    list_of_seats = [6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1, 6, 5, 4, 3, 2, 1,
-                     ]
-
     def get(self, request, username):
 
         user = CustomUser.objects.filter(username=username).all()
@@ -106,7 +96,14 @@ class StartGame(View):
 
         current_user = CustomUser.objects.get(username=username)
 
-        seat_1 = self.list_of_seats.pop()
+        seat_1 = CountSeat.objects.get(id=1).seat_number
+        if seat_1 != 6:
+            seat_1 += 1
+            CountSeat.objects.filter(id=1).update(seat_number=seat_1)
+        elif seat_1 == 6:
+            seat_1 = 1
+            CountSeat.objects.filter(id=1).update(seat_number=seat_1)
+
         seat_2 = 0
         if seat_1 == 6:
             seat_2 = 1

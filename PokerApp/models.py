@@ -84,3 +84,7 @@ class GameWithPlayers(models.Model):
     action_flop = models.CharField(max_length=20, null=True, blank=True)
     action_turn = models.CharField(max_length=20, null=True, blank=True)
     action_river = models.CharField(max_length=20, null=True, blank=True)
+
+
+class CountSeat(models.Model):
+    seat_number = models.PositiveIntegerField(default=0)

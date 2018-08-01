@@ -10,7 +10,7 @@ def hand_power(card1, card2, position):
     hand = card1 + card2
     if position == 'EP':
         if hand[1] == hand[3]:
-            return True
+            return True,
         elif hand[1] in premium_rank and hand[3] in premium_rank:
             return True
     elif position == 'MP':

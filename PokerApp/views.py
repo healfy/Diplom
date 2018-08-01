@@ -1,16 +1,13 @@
 import random
-
 from django.contrib import messages
 from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.db.models import F
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, UpdateView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
-from PokerApp.models import CustomUser, GameWithPlayers, CurrentGame, Bot, \
-    CountSeat
+from PokerApp.models import *
 
 
 def main(request):

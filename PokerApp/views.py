@@ -4,7 +4,7 @@ from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, TemplateView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
 from PokerApp.models import *
@@ -70,7 +70,7 @@ def change_password(request):
     return render(request, 'change_password.html', {'form': form})
 
 
-class StartGame(View):
+class LobbyView(View):
 
     def get(self, request, username):
 
@@ -102,6 +102,7 @@ class StartGame(View):
             CountSeat.objects.filter(id=1).update(seat_number=seat_1)
 
         seat_2 = 0
+
         if seat_1 == 6:
             seat_2 = 1
         else:
@@ -139,15 +140,33 @@ class StartGame(View):
                 game=game_1_start
             )
 
+        return redirect('game', current_user.username)
+
+
+class StartGame(View):
+
+    def get(self, request, username):
+
         game_data = CurrentGame.objects.last()
-        data = GameWithPlayers.objects.filter(game=game_1_start).all()
+        data = GameWithPlayers.objects.filter(game=game_data).all()
 
         for player in data:
             if game_data.small_blind_seat == player.position:
                 player.current_stack = \
                     player.current_stack - game_data.small_blind
+                GameWithPlayers.objects.filter(
+                    position=game_data.small_blind_seat,
+                    game=game_data).update(
+                    current_stack=player.current_stack
+                )
             elif game_data.big_blind_seat == player.position:
                 player.current_stack = \
                     player.current_stack - game_data.big_blind
+                GameWithPlayers.objects.filter(
+                    position=game_data.big_blind_seat,
+                    game=game_data).update(
+                    current_stack=player.current_stack
+                )
 
-        return render(request, 'game.html', locals())
+        return render(request, 'game.html', {'data': data})
+

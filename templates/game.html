@@ -105,12 +105,7 @@
                 <td style="width: 10%"></td>
 
                 <td style="width: 10%; text-align: center" colspan="6">
-                    <img style="" width="78" height="100"
-                         src="{% static 'images' %}/card_{{ game_data.flop_1_card }}.png">
-                    <img style="" width="78" height="100"
-                         src="{% static 'images' %}/card_{{ game_data.flop_2_card }}.png">
-                    <img style="" width="78" height="100"
-                         src="{% static 'images' %}/card_{{ game_data.flop_3_card  }}.png">
+
                 </td>
                 <td style="width: 10%"></td>
 
@@ -139,8 +134,10 @@
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
-                <td style="width: 10%"><img style="border-radius: 20px; width: 60px; height: 60px"
-                                 src="{% static 'images/poker_pot.png' %}">{{ game_data.bank }}</td>
+                <td style="width: 10%">
+{#                <img style="border-radius: 20px; width: 60px; height: 60px"#}
+{#                                 src="{% static 'images/poker_pot.png' %}">{{ game_data.bank }}#}
+                </td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
@@ -218,9 +215,9 @@
                     </button>
                 </td>
                 <td style="width: 10%">
-                    <input id="raise_number" type="number" step="{{ game_data.big_blind }}"
+                    <input id="raise_number" type="number" step=""
 
-                                min="{{ game_data.big_blind }}" value="{{ game_data.big_blind|add:game_data.big_blind }}"
+                                min="" value=""
 
                            style="background: #FAFAFA; border-radius: 60px;
                         text-align: center; font-size: 120%;">

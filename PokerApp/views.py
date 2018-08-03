@@ -104,12 +104,7 @@ class LobbyView(View):
             seat_1 = 1
             CountSeat.objects.filter(id=1).update(seat_number=seat_1)
 
-        seat_2 = 0
-
-        if seat_1 == 6:
-            seat_2 = 1
-        else:
-            seat_2 = seat_1 + 1
+        seat_2 = 1 if seat_1 == 6 else seat_1 + 1
 
         game_1_start = CurrentGame.objects.create(
             small_blind=1,

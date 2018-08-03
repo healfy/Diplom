@@ -223,30 +223,27 @@ class StartGame(View):
                 if hand_value is True and status == 'EP':
                     wage = 3 * game_object.big_blind
                     player_from_base.update(
-                        action_preflop='Raise'
-                    )
-                    player_from_base.update(
+                        action_preflop='Raise',
                         current_stack=F('current_stack') - wage
                     )
+
                 elif hand_value is True and status == 'MP':
                     if GameWithPlayers.objects.get(
                             player_bot__bot_name=players_positions.get(
                                 'EP')).action_preflop == 'Raise':
                         wage = 3 * game_object.big_blind
                         player_from_base.update(
-                            action_preflop='Call'
-                        )
-                        player_from_base.update(
+                            action_preflop='Call',
                             current_stack=F('current_stack') - wage
                         )
+
                     else:
                         wage = 3 * game_object.big_blind
                         player_from_base.update(
-                            action_preflop='Raise'
-                        )
-                        player_from_base.update(
+                            action_preflop='Raise',
                             current_stack=F('current_stack') - wage
                         )
+
                 elif hand_value is True and status == 'CO':
                     if GameWithPlayers.objects.get(
                             player_bot__bot_name=players_positions.get(
@@ -256,19 +253,17 @@ class StartGame(View):
                                     'MP')).action_preflop == 'Fold':
                         wage = 3 * game_object.big_blind
                         player_from_base.update(
-                            action_preflop='Raise'
-                        )
-                        player_from_base.update(
+                            action_preflop='Raise',
                             current_stack=F('current_stack') - wage
                         )
+
                     else:
                         wage = 3 * game_object.big_blind
                         player_from_base.update(
-                            action_preflop='Call'
-                        )
-                        player_from_base.update(
+                            action_preflop='Call',
                             current_stack=F('current_stack') - wage
                         )
+
                 elif hand_value is True and status == 'BU':
                     if GameWithPlayers.objects.get(
                             player_bot__bot_name=players_positions.get(
@@ -281,35 +276,31 @@ class StartGame(View):
                             'CO')).action_preflop == 'Fold':
                         wage = 3 * game_object.big_blind
                         player_from_base.update(
-                            action_preflop='Raise'
-                        )
-                        player_from_base.update(
+                            action_preflop='Raise',
                             current_stack=F('current_stack') - wage
                         )
+
                     else:
                         wage = 3 * game_object.big_blind
                         player_from_base.update(
-                            action_preflop='Call'
-                        )
-                        player_from_base.update(
+                            action_preflop='Call',
                             current_stack=F('current_stack') - wage
                         )
+
                 elif hand_value is True and status == 'SB':
                     wage = 2 * game_object.big_blind + game_object.small_blind
                     player_from_base.update(
-                        action_preflop='Call'
-                    )
-                    player_from_base.update(
+                        action_preflop='Call',
                         current_stack=F('current_stack') - wage
                     )
+
                 elif hand_value is True and status == 'BB':
                     wage = 2 * game_object.big_blind
                     player_from_base.update(
-                        action_preflop='Call'
-                    )
-                    player_from_base.update(
+                        action_preflop='Call',
                         current_stack=F('current_stack') - wage
                     )
+
                 elif hand_value is False:
 
                     player_from_base.update(action_preflop='Fold')

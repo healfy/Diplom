@@ -96,6 +96,8 @@ class LobbyView(View):
 
         current_user = CustomUser.objects.get(username=username)
 
+        PositionOfCurrentPlayer.objects.filter(id=1).update(status='EP')
+
         seat_1 = CountSeat.objects.get(id=1).seat_number
         if seat_1 != 6:
             seat_1 += 1

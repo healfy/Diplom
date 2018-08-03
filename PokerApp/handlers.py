@@ -56,4 +56,4 @@ def change_position(obj):
     elif obj == 'SB':
         return 'BB'
     elif obj == 'BB':
-        return 'SB'
+        return 'EP'

@@ -1,4 +1,4 @@
-def bot_player_position(seat, bb_seat, sb_seat):
+def current_player_position(seat, bb_seat, sb_seat):
     if bb_seat == 2:
         if seat == 3:
             position = 'EP'

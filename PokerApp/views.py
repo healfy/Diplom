@@ -2,11 +2,14 @@ import random
 from django.contrib import messages
 from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.db.models import F
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, UpdateView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
+from PokerApp.handler_function_for_seat import current_player_position
+from PokerApp.handlers import hand_power, change_position
 from PokerApp.models import *
 
 
@@ -135,10 +138,29 @@ class LobbyView(View):
                 player_bot_id=i,
                 handled_card_1=community_cards.pop(),
                 handled_card_2=community_cards.pop(),
-                position=i+1,
+                position=i + 1,
                 current_stack=50,
                 game=game_1_start
             )
+        data = GameWithPlayers.objects.filter(game=game_1_start).all()
+
+        for player in data:
+            if game_1_start.small_blind_seat == player.position:
+                player.current_stack = \
+                    player.current_stack - game_1_start.small_blind
+                GameWithPlayers.objects.filter(
+                    position=game_1_start.small_blind_seat,
+                    game=game_1_start).update(
+                    current_stack=player.current_stack
+                )
+            elif game_1_start.big_blind_seat == player.position:
+                player.current_stack = \
+                    player.current_stack - game_1_start.big_blind
+                GameWithPlayers.objects.filter(
+                    position=game_1_start.big_blind_seat,
+                    game=game_1_start).update(
+                    current_stack=player.current_stack
+                )
 
         return redirect('game', current_user.username)
 
@@ -150,27 +172,150 @@ class StartGame(View):
         game_data = CurrentGame.objects.last()
         data = GameWithPlayers.objects.filter(game=game_data).all()
 
-        for player in data:
-            if game_data.small_blind_seat == player.position:
-                player.current_stack = \
-                    player.current_stack - game_data.small_blind
-                GameWithPlayers.objects.filter(
-                    position=game_data.small_blind_seat,
-                    game=game_data).update(
-                    current_stack=player.current_stack
-                )
-            elif game_data.big_blind_seat == player.position:
-                player.current_stack = \
-                    player.current_stack - game_data.big_blind
-                GameWithPlayers.objects.filter(
-                    position=game_data.big_blind_seat,
-                    game=game_data).update(
-                    current_stack=player.current_stack
-                )
-
         return render(request, 'game.html', {'data': data})
 
+    def post(self, request, username):
+        game_object = CurrentGame.objects.last()
+        status = PositionOfCurrentPlayer.objects.get().status
+        action_data = GameWithPlayers.objects.filter(game=game_object).all()
+        actions = [action.action_preflop for action in action_data]
 
-    # def post(self, request):
+        players_bot = [
+            GameWithPlayers.objects.get(
+                game=game_object, player_bot_id=i) for i in range(1, 6)
+        ]
 
+        players_positions = {
+            current_player_position(
+                player.position, game_object.big_blind_seat,
+                game_object.small_blind_seat): player.current_player.bot_name
+            for player in players_bot
+        }
 
+        players_positions[current_player_position(
+            GameWithPlayers.objects.get(
+                game=game_object, player_user__username=username).position,
+            game_object.big_blind_seat,
+            game_object.small_blind_seat)] = GameWithPlayers.objects.get(
+            game=game_object, player_user__username=username
+        ).current_player.username
+
+        if None in actions:
+
+            current_player = players_positions.get(status)
+
+            player_from_base = GameWithPlayers.objects.filter(
+                game=game_object,
+                player_bot__bot_name=current_player)
+
+            if current_player != username:
+
+                hand_value = hand_power(
+                    GameWithPlayers.objects.get(
+                        game=game_object,
+                        player_bot__bot_name=current_player).handled_card_1,
+                    GameWithPlayers.objects.get(
+                        game=game_object,
+                        player_bot__bot_name=current_player).handled_card_2,
+                    status
+                )
+
+                if hand_value is True and status == 'EP':
+                    wage = 3 * game_object.big_blind
+                    player_from_base.update(
+                        action_preflop='Raise'
+                    )
+                    player_from_base.update(
+                        current_stack=F('current_stack') - wage
+                    )
+                elif hand_value is True and status == 'MP':
+                    if GameWithPlayers.objects.get(
+                            player_bot__bot_name=players_positions.get(
+                                'EP')).action_preflop == 'Raise':
+                        wage = 3 * game_object.big_blind
+                        player_from_base.update(
+                            action_preflop='Call'
+                        )
+                        player_from_base.update(
+                            current_stack=F('current_stack') - wage
+                        )
+                    else:
+                        wage = 3 * game_object.big_blind
+                        player_from_base.update(
+                            action_preflop='Raise'
+                        )
+                        player_from_base.update(
+                            current_stack=F('current_stack') - wage
+                        )
+                elif hand_value is True and status == 'CO':
+                    if GameWithPlayers.objects.get(
+                            player_bot__bot_name=players_positions.get(
+                                'EP')).action_preflop == 'Fold' and \
+                            GameWithPlayers.objects.get(
+                                player_bot__bot_name=players_positions.get(
+                                    'MP')).action_preflop == 'Fold':
+                        wage = 3 * game_object.big_blind
+                        player_from_base.update(
+                            action_preflop='Raise'
+                        )
+                        player_from_base.update(
+                            current_stack=F('current_stack') - wage
+                        )
+                    else:
+                        wage = 3 * game_object.big_blind
+                        player_from_base.update(
+                            action_preflop='Call'
+                        )
+                        player_from_base.update(
+                            current_stack=F('current_stack') - wage
+                        )
+                elif hand_value is True and status == 'BU':
+                    if GameWithPlayers.objects.get(
+                            player_bot__bot_name=players_positions.get(
+                                'EP')).action_preflop == 'Fold' and \
+                            GameWithPlayers.objects.get(
+                        player_bot__bot_name=players_positions.get(
+                            'MP')).action_preflop == 'Fold' and \
+                            GameWithPlayers.objects.get(
+                        player_bot__bot_name=players_positions.get(
+                            'CO')).action_preflop == 'Fold':
+                        wage = 3 * game_object.big_blind
+                        player_from_base.update(
+                            action_preflop='Raise'
+                        )
+                        player_from_base.update(
+                            current_stack=F('current_stack') - wage
+                        )
+                    else:
+                        wage = 3 * game_object.big_blind
+                        player_from_base.update(
+                            action_preflop='Call'
+                        )
+                        player_from_base.update(
+                            current_stack=F('current_stack') - wage
+                        )
+                elif hand_value is True and status == 'SB':
+                    wage = 2 * game_object.big_blind + game_object.small_blind
+                    player_from_base.update(
+                        action_preflop='Call'
+                    )
+                    player_from_base.update(
+                        current_stack=F('current_stack') - wage
+                    )
+                elif hand_value is True and status == 'BB':
+                    wage = 2 * game_object.big_blind
+                    player_from_base.update(
+                        action_preflop='Call'
+                    )
+                    player_from_base.update(
+                        current_stack=F('current_stack') - wage
+                    )
+                elif hand_value is False:
+
+                    player_from_base.update(action_preflop='Fold')
+            # elif current_player == username:
+
+        PositionOfCurrentPlayer.objects.filter(status=status).update(
+            status=change_position(status))
+
+        return redirect('game', username)

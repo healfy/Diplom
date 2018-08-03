@@ -29,3 +29,5 @@ class Command(BaseCommand):
         CountSeat.objects.create(
             seat_number=0
         )
+        PositionOfCurrentPlayer.objects.create(
+        )

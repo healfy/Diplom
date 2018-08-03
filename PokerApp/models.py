@@ -88,3 +88,7 @@ class GameWithPlayers(models.Model):
 
 class CountSeat(models.Model):
     seat_number = models.PositiveIntegerField(default=0)
+
+
+class PositionOfCurrentPlayer(models.Model):
+    status = models.CharField(max_length=10, default='EP', auto_created=True)

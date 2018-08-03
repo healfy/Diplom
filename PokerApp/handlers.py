@@ -1,7 +1,7 @@
 def preflop_actions(list_of_actions):
-    if len(list_of_actions) == 6:
-        return True
-    return False
+    if None in list_of_actions:
+        return False
+    return True
 
 
 def hand_power(card1, card2, position):
@@ -42,3 +42,18 @@ def hand_power(card1, card2, position):
     elif position == 'BB':
         return True
     return False
+
+
+def change_position(obj):
+    if obj == 'EP':
+        return 'MP'
+    elif obj == 'MP':
+        return 'CO'
+    elif obj == 'CO':
+        return 'BU'
+    elif obj == 'BU':
+        return 'SB'
+    elif obj == 'SB':
+        return 'BB'
+    elif obj == 'BB':
+        return 'SB'

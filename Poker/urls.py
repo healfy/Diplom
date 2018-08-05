@@ -28,7 +28,11 @@ urlpatterns = [
     url(r'^login/$', views.LoginFormView.as_view()),
     url(r'^profile/(\w+)/$', views.profile),
     url(r'^lobby/(\w+)/$', views.LobbyView.as_view()),
+    url(r'^lobby/(\w+)/game/call/$', views.call),
+    url(r'^lobby/(\w+)/game/check/$', views.check),
+    url(r'^lobby/(\w+)/game/fold/$', views.fold),
     url(r'^lobby/(\w+)/game/$', views.StartGame.as_view(), name='game'),
+    url(r'^lobby/(\w+)/game/flop/$', views.FlopRound.as_view(), name='flop'),
     url(r'^(?P<pk>\d+)/$', views.UpdateProfile.as_view()),
     url(r'^password/$', views.change_password, name='change_password'),
     path('admin/', admin.site.urls)

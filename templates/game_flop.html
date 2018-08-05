@@ -117,8 +117,7 @@
             <tr style="align-content: left ; height: 60px">
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
-                <td style="width: 10%">
-                </td>
+                <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
@@ -154,7 +153,12 @@
                 <td style="width: 10%"></td>
 
                 <td style="width: 10%; text-align: center" colspan="6">
-
+                    <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ game_data.flop_1_card }}.png">
+                    <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ game_data.flop_2_card }}.png">
+                    <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ game_data.flop_3_card }}.png">
                 </td>
                 <td style="width: 10%"></td>
 
@@ -301,19 +305,9 @@
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%">
-                    {% if None in actions %}
-                        <button name="step"
-                                class="waves-effect waves-light btn-small"
-                                type="submit" >Ходбота
-                        </button>
-                    {% else %}
-                        <a href="/lobby/{{ user }}/game/flop/">
-                            <input type="button"
-                                class="waves-effect waves-light btn-small"
-                                 value="Go to flop" >
-                            </input>
-                        </a>
-                    {% endif %}
+                    <button name="step"
+                            class="waves-effect waves-light btn-small"
+                            type="submit" >Ходбота</button>
                 </td>
             </tr>
         </table>

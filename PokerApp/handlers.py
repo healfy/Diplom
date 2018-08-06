@@ -57,3 +57,58 @@ def change_position(obj):
         return 'BB'
     elif obj == 'BB':
         return 'EP'
+
+
+def combination(hand, deck):
+    streets = [
+        'A2345', '23456', '34567', '45678', '56789', '6789T', '789TJ',
+        '89TJQ', '9TJQK', 'TJQKA',
+    ]
+    dict_hand = {
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        '6': 6,
+        '7': 7,
+        '8': 8,
+        '9': 9,
+        'T': 10,
+        'J': 11,
+        'Q': 12,
+        'K': 13,
+        'A': 14,
+    }
+    if hand[1] == hand[3] and deck.count(hand[1]) == 1:
+        return 'set'
+    elif hand[1] == hand[3] and deck.count(hand[1]) == 2:
+        return 'quad'
+    elif hand[0] == hand[2] and deck.count(hand[0]) >= 3:
+        return 'flash'
+    elif deck.count(hand[1]) == 3 and hand[1] != hand[3] or \
+            deck.count(hand[3]) == 3 and hand[3] != hand[1]:
+        return 'quad'
+    elif hand[1] != hand[3] and deck.count(hand[1]) == 1 or \
+            deck.count(hand[3]) == 1:
+        return 'pair'
+    elif hand[1] == hand[3] and deck.count(hand[1]) == 0:
+        return 'pair'
+    elif hand[1] != hand[3] and deck.count(hand[1]) == 1 and \
+            deck.count(hand[3]) == 1:
+        return 'two pair'
+    elif hand[1] == hand[3] and deck.count(hand[1]) == 1 and \
+        deck.count(deck[1]) == 3 or deck.count(deck[3]) == 3 or \
+            deck.count(deck[5]) == 3 or deck.count(deck[7]) == 3 or \
+            deck.count(deck[9]) == 3:
+        return 'full house'
+    elif hand[1] != hand[3] and deck.count(hand[1]) == 1 or \
+            deck.count(hand[3]) == 1 and deck.count(deck[1]) == 3 \
+            or deck.count(deck[3]) == 3 or deck.count(deck[5]) == 3:
+        return 'full house'
+    elif hand[1] != hand[3] and deck.count(hand[1]) == 2 and \
+            deck.count(hand[3]) == 1 or deck.count(hand[1]) == 1 and \
+            deck.count(hand[3]) == 2:
+        return 'full house'
+    elif hand[1] != hand[3] and deck.count(hand[1]) == 2 or \
+            deck.count(hand[3]) == 2:
+        return ' three or kind'

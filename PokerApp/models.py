@@ -81,9 +81,6 @@ class GameWithPlayers(models.Model):
     position = models.IntegerField(default=0)
     current_stack = models.IntegerField(default=0)
     action_preflop = models.CharField(max_length=20, null=True, blank=True)
-    action_flop = models.CharField(max_length=20, null=True, blank=True)
-    action_turn = models.CharField(max_length=20, null=True, blank=True)
-    action_river = models.CharField(max_length=20, null=True, blank=True)
     wage = models.PositiveIntegerField(default=0)
 
 

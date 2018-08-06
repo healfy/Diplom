@@ -5,8 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.db.models import F, Q
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import FormView, UpdateView, RedirectView, \
-    TemplateView
+from django.views.generic import FormView, UpdateView, TemplateView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
 from PokerApp.handler_function_for_seat import current_player_position
@@ -242,6 +241,9 @@ class StartGame(TemplateView):
                         current_stack=F('current_stack') - wage,
                         wage=wage
                     )
+                    CurrentGame.objects.filter(id=game_object.id).update(
+                        bank=F('bank') + wage
+                    )
 
                 elif hand_value is True and status == 'MP':
                     if GameWithPlayers.objects.get(
@@ -254,6 +256,9 @@ class StartGame(TemplateView):
                             current_stack=F('current_stack') - wage,
                             wage=wage
                         )
+                        CurrentGame.objects.filter(id=game_object.id).update(
+                            bank=F('bank') + wage
+                        )
 
                     else:
                         wage = 3 * game_object.big_blind
@@ -261,6 +266,9 @@ class StartGame(TemplateView):
                             action_preflop='Raise',
                             current_stack=F('current_stack') - wage,
                             wage=wage
+                        )
+                        CurrentGame.objects.filter(id=game_object.id).update(
+                            bank=F('bank') + wage
                         )
 
                 elif hand_value is True and status == 'CO':
@@ -278,6 +286,9 @@ class StartGame(TemplateView):
                             current_stack=F('current_stack') - wage,
                             wage=wage
                         )
+                        CurrentGame.objects.filter(id=game_object.id).update(
+                            bank=F('bank') + wage
+                        )
 
                     else:
                         wage = 3 * game_object.big_blind
@@ -285,6 +296,9 @@ class StartGame(TemplateView):
                             action_preflop='Call',
                             current_stack=F('current_stack') - wage,
                             wage=wage
+                        )
+                        CurrentGame.objects.filter(id=game_object.id).update(
+                            bank=F('bank') + wage
                         )
 
                 elif hand_value is True and status == 'BU':
@@ -304,14 +318,21 @@ class StartGame(TemplateView):
                         player_from_base.update(
                             action_preflop='Raise',
                             current_stack=F('current_stack') - wage,
-                            wage=wage
+                            wage=wage,
+                        )
+                        CurrentGame.objects.filter(id=game_object.id).update(
+                            bank=F('bank') + wage
                         )
 
                     else:
                         wage = 3 * game_object.big_blind
                         player_from_base.update(
                             action_preflop='Call',
-                            current_stack=F('current_stack') - wage
+                            current_stack=F('current_stack') - wage,
+                            wage=wage
+                        )
+                        CurrentGame.objects.filter(id=game_object.id).update(
+                            bank=F('bank') + wage
                         )
 
                 elif hand_value is True and status == 'SB':
@@ -321,6 +342,9 @@ class StartGame(TemplateView):
                         current_stack=F('current_stack') - wage,
                         wage=wage + game_object.small_blind
                     )
+                    CurrentGame.objects.filter(id=game_object.id).update(
+                        bank=F('bank') + wage
+                    )
 
                 elif hand_value is True and status == 'BB':
                     wage = 2 * game_object.big_blind
@@ -329,10 +353,27 @@ class StartGame(TemplateView):
                         current_stack=F('current_stack') - wage,
                         wage=wage + game_object.big_blind
                     )
+                    CurrentGame.objects.filter(id=game_object.id).update(
+                        bank=F('bank') + wage
+                    )
 
                 elif hand_value is False:
 
                     player_from_base.update(action_preflop='Fold')
+
+                PositionOfCurrentPlayer.objects.filter(status=status).update(
+                    status=change_position(status))
+            elif current_player == username:
+                wage = request.POST.get('raise_number')
+                GameWithPlayers.objects.filter(
+                    game=game_object, player_user__username=username, ).update(
+                    action_preflop='Raise',
+                    current_stack=F('current_stack') - wage,
+                    wage=wage
+                )
+                CurrentGame.objects.filter(id=game_object.id).update(
+                    bank=F('bank') + wage
+                )
 
                 PositionOfCurrentPlayer.objects.filter(status=status).update(
                     status=change_position(status))
@@ -366,6 +407,9 @@ def call(request, username):
             current_stack=F('current_stack') - wage,
             wage=wage
         )
+        CurrentGame.objects.filter(id=game_data.id).update(
+            bank=F('bank') + wage
+        )
     elif position == 'SB':
         wage = 2 * game_data.big_blind + game_data.small_blind
         GameWithPlayers.objects.filter(player_user__username=username,
@@ -373,6 +417,9 @@ def call(request, username):
             action_preflop='Call',
             current_stack=F('current_stack') - wage,
             wage=wage + game_data.small_blind
+        )
+        CurrentGame.objects.filter(id=game_data.id).update(
+            bank=F('bank') + wage
         )
     seat = PositionOfCurrentPlayer.objects.get().status
     PositionOfCurrentPlayer.objects.filter(status=seat).update(
@@ -418,3 +465,19 @@ class FlopRound(TemplateView):
         context['game_data'] = game_data
         context['seat'] = seat_of_curr_pos
         return context
+
+    def post(self, request, username):
+        game_data = CurrentGame.objects.last()
+        players = GameWithPlayers.objects.filter(Q(
+            game=game_data,
+            action_preflop__startswith='R') | Q(
+            game=game_data,
+            action_preflop__startswith='C')).all()
+
+        players_positions = {
+            current_player_position(
+                player.position, game_data.big_blind_seat,
+                game_data.small_blind_seat): player.position
+            for player in players
+        }
+

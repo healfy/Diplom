@@ -61,8 +61,9 @@ def change_position(obj):
 
 def combination(hand, deck):
     streets = [
-        'A2345', '23456', '34567', '45678', '56789', '6789T', '789TJ',
-        '89TJQ', '9TJQK', 'TJQKA',
+        [14, 2, 3, 4, 5], [2, 3, 4, 5, 6], [3, 4, 5, 6, 7], [4, 5, 6, 7, 8],
+        [5, 6, 7, 8, 9], [6, 7, 8, 9, 10], [7, 8, 9, 10, 11],
+        [8, 9, 10, 11, 12], [9, 10, 11, 12, 13], [10, 11, 12, 13, 14]
     ]
     dict_hand = {
         '2': 2,
@@ -79,36 +80,60 @@ def combination(hand, deck):
         'K': 13,
         'A': 14,
     }
-    if hand[1] == hand[3] and deck.count(hand[1]) == 1:
-        return 'set'
-    elif hand[1] == hand[3] and deck.count(hand[1]) == 2:
-        return 'quad'
-    elif hand[0] == hand[2] and deck.count(hand[0]) >= 3:
-        return 'flash'
-    elif deck.count(hand[1]) == 3 and hand[1] != hand[3] or \
-            deck.count(hand[3]) == 3 and hand[3] != hand[1]:
-        return 'quad'
-    elif hand[1] != hand[3] and deck.count(hand[1]) == 1 or \
-            deck.count(hand[3]) == 1:
-        return 'pair'
-    elif hand[1] == hand[3] and deck.count(hand[1]) == 0:
-        return 'pair'
-    elif hand[1] != hand[3] and deck.count(hand[1]) == 1 and \
-            deck.count(hand[3]) == 1:
-        return 'two pair'
-    elif hand[1] == hand[3] and deck.count(hand[1]) == 1 and \
-        deck.count(deck[1]) == 3 or deck.count(deck[3]) == 3 or \
-            deck.count(deck[5]) == 3 or deck.count(deck[7]) == 3 or \
-            deck.count(deck[9]) == 3:
-        return 'full house'
-    elif hand[1] != hand[3] and deck.count(hand[1]) == 1 or \
-            deck.count(hand[3]) == 1 and deck.count(deck[1]) == 3 \
-            or deck.count(deck[3]) == 3 or deck.count(deck[5]) == 3:
-        return 'full house'
-    elif hand[1] != hand[3] and deck.count(hand[1]) == 2 and \
-            deck.count(hand[3]) == 1 or deck.count(hand[1]) == 1 and \
-            deck.count(hand[3]) == 2:
-        return 'full house'
-    elif hand[1] != hand[3] and deck.count(hand[1]) == 2 or \
-            deck.count(hand[3]) == 2:
-        return ' three or kind'
+    array = list(set(
+        [dict_hand.get(_) for _ in ''.join(sorted((hand + deck)[1::2]))]))
+
+    section = deck[1::2]
+
+    for element in section:
+        if hand[1] == hand[3] and deck.count(hand[1]) == 1 and \
+                section.count(element) == 1:
+            return 'set'
+        elif section.count(element) == 4:
+            return 'quad'
+        elif hand[1] == hand[3] and deck.count(hand[1]) == 2:
+            return 'quad'
+        elif hand[0] == hand[2] and deck.count(hand[0]) >= 3:
+            return 'flash'
+        elif hand[1] == hand[3] and deck.count(hand[1]) == 0 and \
+                section.count(element) == 1:
+            return 'pair'
+        elif hand[1] == hand[3] and section.count(element) == 2 and \
+                deck.count(hand[1]) == 0:
+            return 'two pair'
+        elif hand[1] == hand[3] and deck.count(hand[1]) == 1 and \
+                section.count(element) == 2:
+            return 'full house'
+        elif hand[1] == hand[3] and deck.count(hand[1]) == 0 and \
+                section.count(element) == 3:
+            return 'full house'
+        elif hand[1] != hand[3]:
+            if deck.count(hand[3]) == 1 and deck.count(hand[1]) == 0 or \
+                    deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0:
+                if section.count(element) == 1:
+                    return 'pair'
+            elif deck.count(hand[1]) == 1 and deck.count(hand[3]) == 1:
+                if section.count(element) == 1:
+                    return 'two pair'
+            elif deck.count(hand[1]) == 3 or deck.count(hand[3]) == 3:
+                return 'quad'
+            elif deck.count(hand[1]) == 0 and deck.count(hand[3]) == 0:
+                if deck.count(hand[0]) < 3 and deck.count(hand[2]) < 3:
+                    if section.count(element) == 1:
+                        for street in streets:
+                            if ''.join(['{}'.format(_) for _ in array]).count(
+                                    ''.join(
+                                        ['{}'.format(_) for _ in street])) != 0:
+                                return 'street'
+                            else:
+                                return 'nothing'
+            elif deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0 or \
+                    deck.count(hand[3]) == 1 and deck.count(hand[1]) == 0:
+                if section.count(element) == 3:
+                    return 'full house'
+            elif deck.count(hand[1]) == 2 and deck.count(hand[3]) == 0 or \
+                    deck.count(hand[3]) == 2 and deck.count(hand[1]) == 0:
+                return 'three of kind'
+            elif deck.count(hand[1]) == 2 and deck.count(hand[3]) == 1 or \
+                    deck.count(hand[1]) == 1 and deck.count(hand[3]) == 2:
+                return 'full house'

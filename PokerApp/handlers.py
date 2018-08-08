@@ -1,9 +1,3 @@
-def preflop_actions(list_of_actions):
-    if None in list_of_actions:
-        return False
-    return True
-
-
 def hand_power(card1, card2, position):
     premium_rank = ['A', 'K', 'Q', 'J', 'T']
     middle_rank = ['9', '8', '7']
@@ -118,7 +112,7 @@ def combination(hand, deck):
             elif deck.count(hand[1]) == 3 or deck.count(hand[3]) == 3:
                 return 'quad'
             elif deck.count(hand[1]) == 0 and deck.count(hand[3]) == 0:
-                if deck.count(hand[0]) < 3 and deck.count(hand[2]) < 3:
+                if deck.count(hand[0]) < 2 and deck.count(hand[2]) < 2:
                     if section.count(element) == 1:
                         for street in streets:
                             if ''.join(['{}'.format(_) for _ in array]).count(
@@ -126,7 +120,7 @@ def combination(hand, deck):
                                         ['{}'.format(_) for _ in street])) != 0:
                                 return 'street'
                             else:
-                                return 'nothing'
+                                return None
             elif deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0 or \
                     deck.count(hand[3]) == 1 and deck.count(hand[1]) == 0:
                 if section.count(element) == 3:

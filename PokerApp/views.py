@@ -9,7 +9,7 @@ from django.views.generic import FormView, UpdateView, TemplateView
 import itertools
 from PokerApp.forms import CustomUserCreationForm, CustomUserChangeForm
 from PokerApp.handler_function_for_seat import current_player_position
-from PokerApp.handlers import hand_power, change_position
+from PokerApp.handlers import hand_power, change_position, combination
 from PokerApp.models import *
 
 
@@ -126,7 +126,7 @@ class LobbyView(View):
             position=1,
             handled_card_1=community_cards.pop(),
             handled_card_2=community_cards.pop(),
-            current_stack=50,
+            current_stack=200,
             game=game_1_start
         )
 
@@ -136,7 +136,7 @@ class LobbyView(View):
                 handled_card_1=community_cards.pop(),
                 handled_card_2=community_cards.pop(),
                 position=i + 1,
-                current_stack=50,
+                current_stack=200,
                 game=game_1_start
             )
         data = GameWithPlayers.objects.filter(game=game_1_start).all()
@@ -450,7 +450,9 @@ class FlopRound(TemplateView):
             game=game_data,
             action_preflop__startswith='R') | Q(
             game=game_data,
-            action_preflop__startswith='C')).all()
+            action_preflop__startswith='C') | Q(
+            game=game_data,
+            action_preflop__startswith='B')).all()
 
         players_positions = {
             current_player_position(
@@ -472,7 +474,11 @@ class FlopRound(TemplateView):
             game=game_data,
             action_preflop__startswith='R') | Q(
             game=game_data,
-            action_preflop__startswith='C')).all()
+            action_preflop__startswith='C') | Q(
+            game=game_data,
+            action_preflop__startswith='B')).all()
+
+        bluff_index = random.randint(1, 7)
 
         players_positions = {
             current_player_position(
@@ -481,3 +487,166 @@ class FlopRound(TemplateView):
             for player in players
         }
 
+        status = PositionOfCurrentPlayer.objects.get().status
+
+        current_player = GameWithPlayers.objects.get(
+            game=game_data, position=players_positions.get(status)
+        )
+        if current_player.player_bot:
+            current_combo = combination(
+                current_player.handled_card_1 + current_player.handled_card_2,
+                game_data.flop_1_card + game_data.flop_2_card +
+                game_data.flop_3_card
+            )
+            if current_player.action_preflop.startswith('R') or \
+                    current_player.action_preflop.startswith('B'):
+                if current_combo:
+                    bet = game_data.bank * 0.6
+                    GameWithPlayers.objects.filter(
+                        game=game_data, position=current_player.position
+                    ).update(
+                        action_preflop='Bet',
+                        wage=bet,
+                        current_stack=F('current_stack') - F('wage')
+                    )
+                    CurrentGame.objects.filter(id=game_data.id).update(
+                        bank=F('bank') + bet
+                    )
+                else:
+                    if bluff_index == 2 or bluff_index == 3 or bluff_index == 5:
+                        GameWithPlayers.objects.filter(
+                            game=game_data, position=current_player.position
+                        ).update(action_preflop='Check')
+                    else:
+                        bet = game_data.bank * 0.6
+                        GameWithPlayers.objects.filter(
+                            game=game_data, position=current_player.position
+                        ).update(
+                            action_preflop='Bet',
+                            wage=bet,
+                            current_stack=F('current_stack') - F('wage')
+                        )
+                        CurrentGame.objects.filter(id=game_data.id).update(
+                            bank=F('bank') + bet
+                        )
+            elif current_player.action_preflop.startswith('C'):
+                if status == 'SB':
+                    GameWithPlayers.objects.filter(
+                        game=game_data, position=players_positions.get(status)
+                    ).update(
+                        action_preflop='Check'
+                    )
+                elif status == 'BB':
+                    if GameWithPlayers.objects.get(
+                            game=game_data, position=players_positions.get('SB')
+                    ).action_preflop == 'Bet':
+                        if current_combo:
+                            GameWithPlayers.objects.filter(
+                                game=game_data, position=current_player.position
+                            ).update(
+                                action_preflop='Call',
+                                wage=GameWithPlayers.objects.get(
+                                    game=game_data,
+                                    position=players_positions.get('SB')).wage,
+                                current_stack=F('current_stack') - F('wage')
+                            )
+                        else:
+                            GameWithPlayers.objects.filter(
+                                game=game_data, position=current_player.position
+                            ).update(action_preflop='Fold')
+                    elif not players_positions.get(
+                            'EP') and not players_positions.get(
+                        'MP') and not players_positions.get(
+                        'CO') and not players_positions.get(
+                        'BU') and GameWithPlayers.objects.get(
+                        game=game_data, position=players_positions.get('SB')
+                    ).action_preflop.startswith('C'):
+                        if current_combo:
+                            bet = game_data.bank * 0.6
+                            GameWithPlayers.objects.filter(
+                                game=game_data,
+                                position=current_player.position
+                            ).update(
+                                action_preflop='Bet',
+                                wage=bet,
+                                current_stack=F('current_stack') - F('wage')
+                            )
+                            CurrentGame.objects.filter(
+                                id=game_data.id).update(
+                                bank=F('bank') + bet
+                            )
+                        else:
+                            if bluff_index in range(1, 5):
+                                bet = game_data.bank * 0.6
+                                GameWithPlayers.objects.filter(
+                                    game=game_data,
+                                    position=current_player.position
+                                ).update(
+                                    action_preflop='Bet',
+                                    wage=bet,
+                                    current_stack=F('current_stack') - F('wage')
+                                )
+                                CurrentGame.objects.filter(
+                                    id=game_data.id).update(
+                                    bank=F('bank') + bet
+                                )
+                    else:
+                        GameWithPlayers.objects.filter(
+                            game=game_data, position=current_player.position
+                        ).update(action_preflop='Check')
+                elif status == 'EP':
+                    if players_positions.get(status):
+                        if GameWithPlayers.objects.get(
+                                game=game_data,
+                                position=players_positions.get('SB')
+                        ).action_preflop == 'Bet':
+                            if current_combo:
+                                bet = GameWithPlayers.objects.get(
+                                    game=game_data,
+                                    position=players_positions.get('SB')
+                                ).wage
+                                GameWithPlayers.objects.filter(
+                                    game=game_data,
+                                    position=current_player.position
+                                ).update(
+                                    action_preflop='Call',
+                                    wage=bet,
+                                    current_stack=F('current_stack') - F('wage')
+                                )
+                                CurrentGame.objects.filter(
+                                    id=game_data.id).update(
+                                    bank=F('bank') + bet
+                                )
+                        elif GameWithPlayers.objects.get(
+                                game=game_data,
+                                position=players_positions.get('BB')
+                        ).action_preflop == 'Bet':
+                            if current_combo:
+                                bet = GameWithPlayers.objects.get(
+                                    game=game_data,
+                                    position=players_positions.get(
+                                        'BB')).wage
+                                GameWithPlayers.objects.filter(
+                                    game=game_data,
+                                    position=current_player.position
+                                ).update(
+                                    action_preflop='Call',
+                                    wage=bet,
+                                    current_stack=F('current_stack') - F('wage')
+                                )
+                                CurrentGame.objects.filter(
+                                    id=game_data.id).update(
+                                    bank=F('bank') + bet
+                                )
+                            else:
+                                GameWithPlayers.objects.filter(
+                                    game=game_data,
+                                    position=current_player.position
+                                ).update(action_preflop='Fold')
+                        else:
+                            GameWithPlayers.objects.filter(
+                                game=game_data, position=current_player.position
+                            ).update(action_preflop='Check')
+                    else:
+                        PositionOfCurrentPlayer.objects.filter(id=1).update(
+                            status=change_position(status))

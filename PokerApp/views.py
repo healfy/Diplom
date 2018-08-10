@@ -370,7 +370,10 @@ def fold(request, username):
     seat = PositionOfCurrentPlayer.objects.get(id=1).status
     PositionOfCurrentPlayer.objects.filter(status=seat).update(
         status=change_position(seat))
-    return redirect('game', username)
+    if 'flop' in request.path:
+        return redirect('flop', username)
+    else:
+        return redirect('game', username)
 
 
 def call(request, username):
@@ -416,7 +419,10 @@ def call(request, username):
     seat = PositionOfCurrentPlayer.objects.get(id=1).status
     PositionOfCurrentPlayer.objects.filter(status=seat).update(
         status=change_position(seat))
-    return redirect('game', username)
+    if 'flop' in request.path:
+        return redirect('flop', username)
+    else:
+        return redirect('game', username)
 
 
 def check(request, username):
@@ -427,7 +433,10 @@ def check(request, username):
     seat = PositionOfCurrentPlayer.objects.get(id=1).status
     PositionOfCurrentPlayer.objects.filter(status=seat).update(
         status=change_position(seat))
-    return redirect('game', username)
+    if 'flop' in request.path:
+        return redirect('flop', username)
+    else:
+        return redirect('game', username)
 
 
 class FlopRound(TemplateView):

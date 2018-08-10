@@ -30,4 +30,8 @@ class Command(BaseCommand):
             seat_number=0
         )
         PositionOfCurrentPlayer.objects.create(
+            status='EP'
+        )
+        PositionOfCurrentPlayer.objects.create(
+            status='SB'
         )

@@ -47,3 +47,4 @@ hand_power_and_positions = {
             player_bot__bot_name=player.current_player.bot_name).handled_card_2
     ] for player in players_bot
 }
+

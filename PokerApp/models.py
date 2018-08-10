@@ -89,4 +89,4 @@ class CountSeat(models.Model):
 
 
 class PositionOfCurrentPlayer(models.Model):
-    status = models.CharField(max_length=10, default='EP', auto_created=True)
+    status = models.CharField(max_length=10)

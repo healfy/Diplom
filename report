@@ -25,7 +25,6 @@ elif current_player.action_preflop == bet
 
 elif current_player.action_preflop == bet1
 
-elif current_player.action_preflop == bet2
 
 и тогда в услоивии elif current_player.action_preflop.startswith('C') добавить проверку на Bet1-Bet2.
 Но это будет очень громоздко, с точки зрения кода, или норм?

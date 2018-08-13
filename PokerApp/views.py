@@ -483,14 +483,22 @@ class FlopRound(TemplateView):
             game=game_data, position=seat_of_curr_pos
         )
 
-        if actions_list.count('Check') == len(actions_list) and \
-                PositionOfCurrentPlayer.objects.get(id=2).status == 'SB':
+        if actions_list.count('Check') == len(actions_list):
             flag = 1
+            PositionOfCurrentPlayer.objects.filter(id=2).update(status='SB')
         elif 'Bet' in actions_list and len(actions_list) == 1:
-            flag = 3
+            game_winner = GameWithPlayers.objects.get(
+                action_preflop='Bet')
+            if game_winner.player_bot:
+                CurrentGame.objects.filter(id=game_data.id).update(
+                    winner=game_winner.current_player.bot_name)
+            elif game_winner.player_user:
+                CurrentGame.objects.filter(id=game_data.id).update(
+                    winner=game_winner.current_player.username)
         elif 'Bet' in actions_list and len(actions_list) > 1 and \
-                actions_list.count('Check') == 0 and PositionOfCurrentPlayer.objects.get(id=2).status == 'SB':
+                actions_list.count('Check') == 0:
             flag = 1
+            PositionOfCurrentPlayer.objects.filter(id=2).update(status='SB')
 
         context['data'] = data
         context['game_data'] = game_data
@@ -895,14 +903,23 @@ class TurnRound(TemplateView):
             game=game_data, position=seat_of_curr_pos
         )
 
-        if actions_list.count('Check') == len(actions_list) and \
-                PositionOfCurrentPlayer.objects.get(id=2).status == 'SB':
+        if actions_list.count('Check') == len(actions_list):
             flag = 1
+            PositionOfCurrentPlayer.objects.filter(id=2).update(status='SB')
         elif 'Bet' in actions_list and len(actions_list) == 1:
-            flag = 3
+            flag = 2
+            game_winner = GameWithPlayers.objects.get(
+                action_preflop='Bet')
+            if game_winner.player_bot:
+                CurrentGame.objects.filter(id=game_data.id).update(
+                    winner=game_winner.current_player.bot_name)
+            elif game_winner.player_user:
+                CurrentGame.objects.filter(id=game_data.id).update(
+                    winner=game_winner.current_player.username)
         elif 'Bet' in actions_list and len(actions_list) > 1 and \
                 actions_list.count('Check') == 0:
             flag = 1
+            PositionOfCurrentPlayer.objects.filter(id=2).update(status='SB')
 
         context['data'] = data
         context['game_data'] = game_data

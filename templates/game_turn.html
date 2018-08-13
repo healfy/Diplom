@@ -317,7 +317,7 @@
                 <td style="width: 10%">
                 </td>
                 <td style="width: 10%">
-                {% if flag != 3 %}
+                {% if flag == 0 %}
                     {% if current_player.action_preflop == 'Fold' %}
                         <button name="step"
                             class="waves-effect waves-light btn-small"
@@ -327,7 +327,7 @@
                             class="waves-effect waves-light btn-small"
                             type="submit" >Ходбота</button>
                     {% endif %}
-                {% elif flag == 3 %}
+                {% elif flag == 2 %}
                     <a href="lobby/{{ user }}/game/">
                         <input type="button"
                             class="waves-effect waves-light btn-small"

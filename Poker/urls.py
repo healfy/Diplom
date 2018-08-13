@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^lobby/(\w+)/game/$', views.StartGame.as_view(), name='game'),
     url(r'^lobby/(\w+)/game/flop/$', views.FlopRound.as_view(), name='flop'),
     url(r'^lobby/(\w+)/game/turn/$', views.TurnRound.as_view(), name='turn'),
+    url(r'^lobby/(\w+)/game/river/$', views.RiverRound.as_view(), name='river'),
     url(r'^(?P<pk>\d+)/$', views.UpdateProfile.as_view()),
     url(r'^password/$', views.change_password, name='change_password'),
     path('admin/', admin.site.urls)

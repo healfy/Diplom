@@ -106,6 +106,8 @@ def combination(hand, deck):
                     deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0:
                 if section.count(element) == 1:
                     return 'pair'
+            elif deck.count(hand[0]) == 2 or deck.count(hand[2]) == 2:
+                return 'FD'
             elif deck.count(hand[1]) == 1 and deck.count(hand[3]) == 1:
                 if section.count(element) == 1:
                     return 'two pair'

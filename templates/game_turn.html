@@ -10,38 +10,24 @@
             border-collapse: unset;
             background-size: 100%;
         }
-        .btn-yellow
-        {
-            background-color:lightyellow;
-        }
-
         .btn-green
         {
             background-color:lightgreen;
 
         }
-    </style>
-    <script>
-    window.setInterval(function()
-                   {
-                                             $("#btn").toggleClass("btn-green");
-                   },1000);
-    </script>
-    <style>
         @-webkit-keyframes pulsate {
          50% { color: #fff; text-shadow: 0 -1px rgba(0,0,0,.3), 0 0 5px #ffd, 0 0 8px #fff; }
         }
         @keyframes pulsate {
          50% { color: #fff; text-shadow: 0 -1px rgba(0,0,0,.3), 0 0 5px #ffd, 0 0 8px #fff; }
         }
-        #blink1 {
-          color: rgb(245,245,245);
-          text-shadow: 0 -1px rgba(0,0,0,.1);
-          background: green;
-          -webkit-animation: pulsate 1.2s linear infinite;
-          animation: pulsate 1.2s linear infinite;
-        }
     </style>
+    <script>
+    window.setInterval(function()
+                   {
+                       $("#btn").toggleClass("btn-green");
+                   },1000);
+    </script>
     <form method="post" target="_self">
     {% csrf_token %}
         <table style="align-content: center; color:#FAFAFA ">
@@ -317,7 +303,7 @@
                 <td style="width: 10%">
                 </td>
                 <td style="width: 10%">
-                {% if flag == 0 %}
+                {% if flag != 2 %}
                     {% if current_player.action_preflop == 'Fold' %}
                         <button name="step"
                             class="waves-effect waves-light btn-small"
@@ -328,7 +314,7 @@
                             type="submit" >Ходбота</button>
                     {% endif %}
                 {% elif flag == 2 %}
-                    <a href="lobby/{{ user }}/game/">
+                    <a href="/lobby/{{ user }}/">
                         <input type="button"
                             class="waves-effect waves-light btn-small"
                              value="New game" >

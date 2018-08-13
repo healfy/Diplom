@@ -378,6 +378,11 @@ def fold(request, username):
             status=change_position(
                 PositionOfCurrentPlayer.objects.get(id=2).status))
         return redirect('flop', username)
+    elif 'turn' in request.path:
+        PositionOfCurrentPlayer.objects.filter(id=2).update(
+            status=change_position(
+                PositionOfCurrentPlayer.objects.get(id=2).status))
+        return redirect('turn', username)
     else:
         PositionOfCurrentPlayer.objects.filter(id=1).update(
             status=change_position(
@@ -389,48 +394,82 @@ def call(request, username):
     game_data = CurrentGame.objects.last()
     position = current_player_position(
         GameWithPlayers.objects.get(
-            game=game_data, player_user__username=username).position,
+            game=game_data,
+            player_user__username=username
+        ).position,
         game_data.big_blind_seat,
         game_data.small_blind_seat)
-    if position != 'SB' and position != 'BB':
-        wage = 3 * game_data.big_blind
-        GameWithPlayers.objects.filter(player_user__username=username,
-                                       game=game_data).update(
-            action_preflop='Call',
-            current_stack=F('current_stack') - wage,
-            wage=wage
-        )
-        CurrentGame.objects.filter(id=game_data.id).update(
-            bank=F('bank') + wage
-        )
-    elif position == 'SB':
-        wage = 2 * game_data.big_blind + game_data.small_blind
-        GameWithPlayers.objects.filter(player_user__username=username,
-                                       game=game_data).update(
-            action_preflop='Call',
-            current_stack=F('current_stack') - wage,
-            wage=wage + game_data.small_blind
-        )
-        CurrentGame.objects.filter(id=game_data.id).update(
-            bank=F('bank') + wage
-        )
-    elif position == 'BB':
-        wage = 2 * game_data.big_blind
-        GameWithPlayers.objects.filter(player_user__username=username,
-                                       game=game_data).update(
-            action_preflop='Call',
-            current_stack=F('current_stack') - wage,
-            wage=wage + game_data.small_blind
-        )
-        CurrentGame.objects.filter(id=game_data.id).update(
-            bank=F('bank') + wage
-        )
     if 'flop' in request.path:
+        bet = GameWithPlayers.objects.get(
+            game=game_data, action_preflop='Bet'
+        ).wage
+        GameWithPlayers.objects.filter(
+            player_user__username=username,
+            game=game_data).update(
+            action_preflop='Call',
+            current_stack=F('current_stack') - bet,
+            wage=bet
+        )
+        CurrentGame.objects.filter(id=game_data.id).update(
+            bank=F('bank') + bet
+        )
+
         PositionOfCurrentPlayer.objects.filter(id=2).update(
             status=change_position(
                 PositionOfCurrentPlayer.objects.get(id=2).status))
         return redirect('flop', username)
+    elif 'turn' in request.path:
+        bet = GameWithPlayers.objects.get(
+            game=game_data, action_preflop='Bet1'
+        ).wage
+        GameWithPlayers.objects.filter(
+            player_user__username=username,
+            game=game_data).update(
+            action_preflop='Call',
+            current_stack=F('current_stack') - bet,
+            wage=bet
+        )
+        CurrentGame.objects.filter(id=game_data.id).update(
+            bank=F('bank') + bet
+        )
+        PositionOfCurrentPlayer.objects.filter(id=2).update(
+            status=change_position(
+                PositionOfCurrentPlayer.objects.get(id=2).status))
+        return redirect('turn', username)
     else:
+        if position != 'SB' and position != 'BB':
+            wage = 3 * game_data.big_blind
+            GameWithPlayers.objects.filter(player_user__username=username,
+                                           game=game_data).update(
+                action_preflop='Call',
+                current_stack=F('current_stack') - wage,
+                wage=wage
+            )
+            CurrentGame.objects.filter(id=game_data.id).update(
+                bank=F('bank') + wage
+            )
+        elif position == 'SB':
+            wage = 2 * game_data.big_blind + game_data.small_blind
+            GameWithPlayers.objects.filter(player_user__username=username,
+                                           game=game_data).update(
+                action_preflop='Call',
+                current_stack=F('current_stack') - wage,
+                wage=wage + game_data.small_blind
+            )
+            CurrentGame.objects.filter(id=game_data.id).update(
+                bank=F('bank') + wage
+            )
+        elif position == 'BB':
+            wage = 2 * game_data.big_blind
+            GameWithPlayers.objects.filter(player_user__username=username,
+                                           game=game_data).update(
+                action_preflop='Call',
+                current_stack=F('current_stack') - wage,
+                wage=wage + game_data.small_blind
+            )
+            CurrentGame.objects.filter(id=game_data.id).update(
+                bank=F('bank') + wage
+            )
         PositionOfCurrentPlayer.objects.filter(id=1).update(
             status=change_position(
                 PositionOfCurrentPlayer.objects.get(id=1).status))
@@ -447,6 +486,11 @@ def check(request, username):
             status=change_position(
                 PositionOfCurrentPlayer.objects.get(id=2).status))
         return redirect('flop', username)
+    elif 'turn' in request.path.__str__():
+        PositionOfCurrentPlayer.objects.filter(id=2).update(
+            status=change_position(
+                PositionOfCurrentPlayer.objects.get(id=2).status))
+        return redirect('turn', username)
     else:
         PositionOfCurrentPlayer.objects.filter(id=1).update(
             status=change_position(
@@ -587,7 +631,7 @@ class FlopRound(TemplateView):
                                 action_preflop='Check'
                             )
                     PositionOfCurrentPlayer.objects.filter(id=2).update(
-                            status=change_position(status))
+                        status=change_position(status))
                 elif status == 'BB':
                     for element in players:
                         if element.action_preflop == 'Bet':
@@ -674,7 +718,7 @@ class FlopRound(TemplateView):
                                 action_preflop='Check'
                             )
                     PositionOfCurrentPlayer.objects.filter(id=2).update(
-                            status=change_position(status))
+                        status=change_position(status))
                 elif status == 'EP':
                     for element in players:
                         if element.action_preflop == 'Bet':
@@ -758,9 +802,9 @@ class FlopRound(TemplateView):
                                 position=players_positions.get('EP')
                         ).action_preflop != 'Bet' and \
                                 GameWithPlayers.objects.get(
-                            game=game_data,
-                            position=players_positions.get('MP')
-                        ).action_preflop != 'Bet':
+                                    game=game_data,
+                                    position=players_positions.get('MP')
+                                ).action_preflop != 'Bet':
                             if current_combo:
                                 bet = 3 * game_data.big_blind
                                 GameWithPlayers.objects.filter(
@@ -905,18 +949,18 @@ class TurnRound(TemplateView):
 
         if actions_list.count('Check') == len(actions_list):
             flag = 1
-            PositionOfCurrentPlayer.objects.filter(id=2).update(status='SB')
-        elif 'Bet' in actions_list and len(actions_list) == 1:
+        elif 'Bet1' in actions_list and len(actions_list) == 1:
             flag = 2
             game_winner = GameWithPlayers.objects.get(
-                action_preflop='Bet')
+                action_preflop='Bet1',
+                game=game_data)
             if game_winner.player_bot:
                 CurrentGame.objects.filter(id=game_data.id).update(
                     winner=game_winner.current_player.bot_name)
             elif game_winner.player_user:
                 CurrentGame.objects.filter(id=game_data.id).update(
                     winner=game_winner.current_player.username)
-        elif 'Bet' in actions_list and len(actions_list) > 1 and \
+        elif 'Bet1' in actions_list and len(actions_list) > 1 and \
                 actions_list.count('Check') == 0:
             flag = 1
             PositionOfCurrentPlayer.objects.filter(id=2).update(status='SB')
@@ -929,6 +973,7 @@ class TurnRound(TemplateView):
         return context
 
     def post(self, request, username):
+        bluff_index = random.randint(1, 5)
         game_data = CurrentGame.objects.last()
         players = GameWithPlayers.objects.filter(game=game_data).all()
 
@@ -964,10 +1009,100 @@ class TurnRound(TemplateView):
                 )
                 PositionOfCurrentPlayer.objects.filter(id=2).update(
                     status=change_position(status))
-            elif current_player.action_preflop == 'Call':
-                pass
-            elif current_player.action_preflop == 'Check':
-                pass
+
+            elif current_player.action_preflop.startswith('C'):
+                for elem in players:
+                    if elem.action_preflop == 'Bet1':
+                        if current_combo:
+                            bet = GameWithPlayers.objects.get(
+                                game=game_data,
+                                action_preflop='Bet1'
+                            ).wage
+                            GameWithPlayers.objects.filter(
+                                game=game_data,
+                                position=players_positions.get(status)
+                            ).update(
+                                action_preflop='Call',
+                                wage=bet,
+                                current_stack=F('current_stack') - F('wage')
+                            )
+                            CurrentGame.objects.filter(id=game_data.id).update(
+                                bank=F('bank') + bet
+                            )
+                        else:
+                            GameWithPlayers.objects.filter(
+                                game=game_data,
+                                position=players_positions.get(status)
+                            ).update(
+                                action_preflop='Fold',
+                            )
+                    elif not elem.action_preflop == 'Bet1' and not \
+                            elem.action_preflop == 'Bet':
+                        if current_combo:
+                            if current_combo != 'pair' or current_combo != 'FD':
+                                bet = game_data.bank * 0.55
+                                GameWithPlayers.objects.filter(
+                                    game=game_data,
+                                    position=players_positions.get(status)
+                                ).update(
+                                    action_preflop='Bet1',
+                                    wage=bet,
+                                    current_stack=F('current_stack') - F('wage')
+                                )
+                                CurrentGame.objects.filter(
+                                    id=game_data.id).update(
+                                    bank=F('bank') + bet
+                                )
+                            elif current_combo == 'pair':
+                                if bluff_index in range(1, 4):
+                                    bet = game_data.bank * 0.55
+                                    GameWithPlayers.objects.filter(
+                                        game=game_data,
+                                        position=players_positions.get(status)
+                                    ).update(
+                                        action_preflop='Bet1',
+                                        wage=bet,
+                                        current_stack=F('current_stack') - F(
+                                            'wage')
+                                    )
+                                    CurrentGame.objects.filter(
+                                        id=game_data.id).update(
+                                        bank=F('bank') + bet
+                                    )
+                                else:
+                                    GameWithPlayers.objects.filter(
+                                        game=game_data,
+                                        position=players_positions.get(status)
+                                    ).update(
+                                        action_preflop='Check',
+                                    )
+                            elif current_combo == 'FD':
+                                if bluff_index in range(3, 5):
+                                    bet = game_data.bank * 0.55
+                                    GameWithPlayers.objects.filter(
+                                        game=game_data,
+                                        position=players_positions.get(status)
+                                    ).update(
+                                        action_preflop='Call',
+                                        wage=bet,
+                                        current_stack=F('current_stack') - F(
+                                            'wage')
+                                    )
+                                    CurrentGame.objects.filter(
+                                        id=game_data.id).update(
+                                        bank=F('bank') + bet
+                                    )
+                                else:
+                                    GameWithPlayers.objects.filter(
+                                        game=game_data,
+                                        position=players_positions.get(status)
+                                    ).update(
+                                        action_preflop='Check',
+                                    )
+                    PositionOfCurrentPlayer.objects.filter(id=2).update(
+                        status=change_position(status))
+
             elif current_player.action_preflop == 'Fold':
                 PositionOfCurrentPlayer.objects.filter(id=2).update(
                     status=change_position(status))
+        return redirect('turn', username)

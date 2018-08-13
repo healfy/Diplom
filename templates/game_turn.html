@@ -72,7 +72,7 @@
                 <td>
                     {% for user in data %}
                         {% if user.current_player.username %}
-                            <img style="border-radius: 5px" width="78" height="100"
+                            <img style="border-radius: 5px" width="78" height="100" {% if user.action_preflop == 'Fold' %}hidden{% endif %}
                                  src="{% static 'images' %}/card_{{ user.handled_card_1 }}.png">
                         {% endif %}
                     {% endfor %}
@@ -81,7 +81,7 @@
                 <td >
                     {% for user in data %}
                         {% if user.current_player.username %}
-                            <img style="border-radius: 5px" width="78" height="100"
+                            <img style="border-radius: 5px" width="78" height="100" {% if user.action_preflop == 'Fold' %}hidden{% endif %}
                                  src="{% static 'images' %}/card_{{ user.handled_card_2 }}.png">
                         {% endif %}
                     {% endfor %}
@@ -117,8 +117,7 @@
             <tr style="align-content: left ; height: 60px">
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
-                <td style="width: 10%">
-                </td>
+                <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
@@ -154,6 +153,14 @@
                 <td style="width: 10%"></td>
 
                 <td style="width: 10%; text-align: center" colspan="6">
+                    <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ game_data.flop_1_card }}.png">
+                    <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ game_data.flop_2_card }}.png">
+                    <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ game_data.flop_3_card }}.png">
+                        <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ game_data.turn }}.png">
 
                 </td>
                 <td style="width: 10%"></td>
@@ -256,7 +263,7 @@
             <tr style="align-content: left ; height: 90px">
                 <td style="width: 5%"></td>
                 <td></td>
-                {% if current_player.player_user  %}
+            {% if current_player.player_user and current_player.action_preflop != 'Fold' %}
                 <td>
                     <a href="/lobby/{{ user }}/game/check/">
                         <input type="button"
@@ -307,23 +314,27 @@
                 <td style="width: 10%"></td>
             {% endif %}
                 <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
                 <td style="width: 10%">
-                    {% if None in actions %}
-                        {% if current_player.player_bot %}
-                            <button name="step"
-                                    class="waves-effect waves-light btn-small"
-                                    type="submit" >Ходбота
-                            </button>
-                        {% endif %}
-                    {% else %}
-                        <a href="/lobby/{{ user }}/game/flop/">
-                            <input type="button"
-                                class="waves-effect waves-light btn-small"
-                                 value="Go to flop" >
-                            </input>
-                        </a>
+                </td>
+                <td style="width: 10%">
+                {% if flag != 3 %}
+                    {% if current_player.action_preflop == 'Fold' %}
+                        <button name="step"
+                            class="waves-effect waves-light btn-small"
+                            type="submit" >Пропустить</button>
+                        {% else %}
+                    <button name="step"
+                            class="waves-effect waves-light btn-small"
+                            type="submit" >Ходбота</button>
                     {% endif %}
+                {% elif flag == 3 %}
+                    <a href="lobby/{{ user }}/game/">
+                        <input type="button"
+                            class="waves-effect waves-light btn-small"
+                             value="New game" >
+                        </input>
+                    </a>
+                {% endif %}
                 </td>
             </tr>
         </table>

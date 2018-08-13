@@ -159,10 +159,7 @@
                                  src="{% static 'images' %}/card_{{ game_data.flop_2_card }}.png">
                     <img style="border-radius: 5px" width="78" height="100"
                                  src="{% static 'images' %}/card_{{ game_data.flop_3_card }}.png">
-                    {% if flag == 1 %}
-                        <img style="border-radius: 5px" width="78" height="100"
-                                 src="{% static 'images' %}/card_{{ game_data.turn }}.png">
-                    {% endif %}
+
                 </td>
                 <td style="width: 10%"></td>
 
@@ -318,7 +315,7 @@
                 <td style="width: 10%">
                 </td>
                 <td style="width: 10%">
-                {% if flag != 3 %}
+                {% if flag != 3  and flag != 1%}
                     {% if current_player.action_preflop == 'Fold' %}
                         <button name="step"
                             class="waves-effect waves-light btn-small"
@@ -333,6 +330,13 @@
                         <input type="button"
                             class="waves-effect waves-light btn-small"
                              value="New game" >
+                        </input>
+                    </a>
+                {% elif flag == 1 %}
+                    <a href="/lobby/{{ user }}/game/turn/">
+                        <input type="button"
+                            class="waves-effect waves-light btn-small"
+                             value="Turn" >
                         </input>
                     </a>
                 {% endif %}

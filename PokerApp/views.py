@@ -119,7 +119,8 @@ class LobbyView(View):
             flop_2_card=community_cards.pop(),
             flop_3_card=community_cards.pop(),
             turn=community_cards.pop(),
-            river=community_cards.pop()
+            river=community_cards.pop(),
+            user=current_user
         )
 
         GameWithPlayers.objects.create(
@@ -167,8 +168,10 @@ class StartGame(TemplateView):
     template_name = 'game.html'
 
     def get_context_data(self, **kwargs):
+        print()
         context = super(StartGame, self).get_context_data(**kwargs)
-        game_data = CurrentGame.objects.last()
+        game_data = CurrentGame.objects.filter(
+            user__username=self.args[0]).last()
         data = GameWithPlayers.objects.filter(game=game_data).all()
         status = PositionOfCurrentPlayer.objects.get(id=1).status
         action_data = GameWithPlayers.objects.filter(game=game_data).all()
@@ -195,7 +198,7 @@ class StartGame(TemplateView):
         return context
 
     def post(self, request, username):
-        game_object = CurrentGame.objects.last()
+        game_object = CurrentGame.objects.filter(user__username=username).last()
         status = PositionOfCurrentPlayer.objects.get(id=1).status
         action_data = GameWithPlayers.objects.filter(game=game_object).all()
 
@@ -501,7 +504,8 @@ class FlopRound(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(FlopRound, self).get_context_data(**kwargs)
         flag = 0
-        game_data = CurrentGame.objects.last()
+        game_data = CurrentGame.objects.filter(
+            user__username=self.args[0]).last()
         data = GameWithPlayers.objects.filter(
             game=game_data).all()
         actions_list = []
@@ -549,7 +553,7 @@ class FlopRound(TemplateView):
         return context
 
     def post(self, request, username):
-        game_data = CurrentGame.objects.last()
+        game_data = CurrentGame.objects.filter(user__username=username).last()
         players = GameWithPlayers.objects.filter(game=game_data).all()
         bluff_index = random.randint(1, 7)
 
@@ -964,7 +968,7 @@ class TurnRound(TemplateView):
 
     def post(self, request, username):
         bluff_index = random.randint(1, 5)
-        game_data = CurrentGame.objects.last()
+        game_data = CurrentGame.objects.filter(user__username=username).last()
         players = GameWithPlayers.objects.filter(game=game_data).all()
         actions = [pl.action_preflop for pl in players]
 
@@ -1128,7 +1132,8 @@ class RiverRound(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(RiverRound, self).get_context_data(**kwargs)
         flag = 0
-        game_data = CurrentGame.objects.last()
+        game_data = CurrentGame.objects.filter(
+            user__username=self.args[0]).last()
         data = GameWithPlayers.objects.filter(game=game_data).all()
         actions_list = []
 
@@ -1177,7 +1182,7 @@ class RiverRound(TemplateView):
 
     def post(self, request, username):
         bluff_index = random.randint(1, 5)
-        game_data = CurrentGame.objects.last()
+        game_data = CurrentGame.objects.filter(user__username=username).last()
         players = GameWithPlayers.objects.filter(game=game_data).all()
         actions = [pl.action_preflop for pl in players]
 
@@ -1370,7 +1375,8 @@ class ShowDown(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ShowDown, self).get_context_data(**kwargs)
-        game_data = CurrentGame.objects.last()
+        game_data = CurrentGame.objects.filter(
+            user__username=self.args[0]).last()
         data = GameWithPlayers.objects.filter(
             Q(game=game_data, action_preflop='Bet2') |
             Q(game=game_data, action_preflop__startswith='C')).all()

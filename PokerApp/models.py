@@ -43,6 +43,8 @@ class CurrentGame(models.Model):
     turn = models.CharField(blank=True, null=True, max_length=20)
     river = models.CharField(blank=True, null=True, max_length=20)
     winner = models.CharField(verbose_name='winner', max_length=20)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                             related_name='user_game', blank=True, null=True)
 
 
 class GameWithPlayers(models.Model):

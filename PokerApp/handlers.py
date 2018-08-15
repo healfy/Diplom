@@ -106,6 +106,10 @@ def combination(hand, deck):
                     deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0:
                 if section.count(element) == 1:
                     return 'pair'
+            elif deck.count(hand[3]) == 1 and deck.count(hand[1]) == 0 or \
+                    deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0:
+                if section.count(element) == 2:
+                    return 'tow pair'
             elif deck.count(hand[0]) == 2 or deck.count(hand[2]) == 2:
                 return 'FD'
             elif deck.count(hand[1]) == 1 and deck.count(hand[3]) == 1:
@@ -119,10 +123,15 @@ def combination(hand, deck):
                         for street in streets:
                             if ''.join(['{}'.format(_) for _ in array]).count(
                                     ''.join(
-                                        ['{}'.format(_) for _ in street])) != 0:
+                                        ['{}'.format(_) for _ in street])) > 0:
+                                if hand[0] == hand[2] and deck.count(
+                                        hand[0]) >= 3:
+                                    if ''.join(['{}'.format(_) for _ in
+                                                array]).count('1011121314') > 0:
+                                        return 'flush royal'
+                                    return 'street flush'
                                 return 'street'
-                            else:
-                                return None
+                            return None
             elif deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0 or \
                     deck.count(hand[3]) == 1 and deck.count(hand[1]) == 0:
                 if section.count(element) == 3:

@@ -6,7 +6,7 @@
         table {
             width: 100%;
             border-spacing: 1px;
-            background: #0f9d58 url({% static 'fgx-border.png'%}) repeat-y;
+            background: #0f9d58 ;
             border-collapse: unset;
             background-size: 100%;
         }
@@ -80,39 +80,20 @@
                              id="btn"
                         {% endif %}
                     {% endif %}
-                {% endfor %}>
+                {% endfor %} colspan="3">
                     {% for user in data %}
                         {% if user.position == 2 %}
-                            <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_1 }}.png">
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_2 }}.png">
                             {{ user.current_player.bot_name }}
-                            {% if user.position == user.game.small_blind_seat %}
-                                {{ user.game.small_blind }}
-                            {% elif user.position == user.game.big_blind_seat %}
-                                {{ user.game.big_blind }}
-                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-            </tr>
-            <tr style="align-content: left ; height: 60px">
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
             </tr>
             <tr style="align-content: center; height: 90px">
                 <td style="width: 10%" {% for user in data %}
@@ -121,24 +102,19 @@
                              id="btn"
                         {% endif %}
                     {% endif %}
-                {% endfor %}>
+                {% endfor %} colspan="2">
                     {% for user in data %}
                         {% if user.position == 6 %}
-                            <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
-                            {{ user.current_player.bot_name }}
-                            {% if user.position == user.game.small_blind_seat %}
-                                {{ user.game.small_blind }}
-                            {% elif user.position == user.game.big_blind_seat %}
-                                {{ user.game.big_blind }}
-                            {% endif %}
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_1 }}.png">
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_2 }}.png">
+                            <p>{{ user.current_player.bot_name }}</p>
                         {% endif %}
                     {% endfor %}
                 </td>
-                <td style="width: 10%"></td>
 
-                <td style="width: 10%; text-align: center" colspan="6">
+                <td style="width: 10%; text-align: center" colspan="5">
                     <img style="border-radius: 5px" width="78" height="100"
                                  src="{% static 'images' %}/card_{{ game_data.flop_1_card }}.png">
                     <img style="border-radius: 5px" width="78" height="100"
@@ -151,7 +127,6 @@
                                  src="{% static 'images' %}/card_{{ game_data.river }}.png">
 
                 </td>
-                <td style="width: 10%"></td>
 
                 <td style="width: 10%" {% for user in data %}
                     {% if user.position == 3 %}
@@ -159,23 +134,18 @@
                              id="btn"
                         {% endif %}
                     {% endif %}
-                {% endfor %}>
+                {% endfor %} colspan="3">
                     {% for user in data %}
                         {% if user.position == 3 %}
-                            <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_1 }}.png">
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_2 }}.png">
                             {{ user.current_player.bot_name }}
-                            {% if user.position == user.game.small_blind_seat %}
-                                {{ user.game.small_blind }}
-                            {% elif user.position == user.game.big_blind_seat %}
-                                {{ user.game.big_blind }}
-                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
+
             </tr>
             <tr style="align-content: left ; height: 90px">
                 <td style="width: 5%"></td>
@@ -183,7 +153,9 @@
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
+                <td style="width: 10%" id="btn">
+                   Winner is  {{ game_data.winner }}
+                </td>
                 <td style="width: 10%">
                 <img style="border-radius: 20px; width: 60px; height: 60px"
                                  src="{% static 'images/poker_pot.png' %}">{{ game_data.bank }}
@@ -203,24 +175,22 @@
                              id="btn"
                         {% endif %}
                     {% endif %}
-                {% endfor %}>
+                {% endfor %} colspan="2">
                     {% for user in data %}
                         {% if user.position == 5 %}
-                            <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
-                            {{ user.current_player.bot_name }}
-                            {% if user.position == user.game.small_blind_seat %}
-                                {{ user.game.small_blind }}
-                            {% elif user.position == user.game.big_blind_seat %}
-                                {{ user.game.big_blind }}
-                            {% endif %}
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_1 }}.png">
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_2 }}.png">
+                            <p>{{ user.current_player.bot_name }}</p>
                         {% endif %}
                     {% endfor %}
                 </td>
                 <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
+                <td style="width: 10%"><a href="/lobby/{{ user }}/">
+                    <input type="button" class="waves-effect waves-light btn-small"
+                             value="New Game">
+                </a></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%" {% for user in data %}
                     {% if user.position == 4 %}
@@ -228,18 +198,14 @@
                              id="btn"
                         {% endif %}
                     {% endif %}
-                {% endfor %}>
+                {% endfor %} colspan="2">
                     {% for user in data %}
                         {% if user.position == 4 %}
-                            <img style="border-radius: 50px" width="90" height="60"
-                                 src="{{ user.current_player.bot_image.url }}">
-                            {{ user.current_stack }}
-                            {{ user.current_player.bot_name }}
-                            {% if user.position == user.game.small_blind_seat %}
-                                {{ user.game.small_blind }}
-                            {% elif user.position == user.game.big_blind_seat %}
-                                {{ user.game.big_blind }}
-                            {% endif %}
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_1 }}.png">
+                            <img style="border-radius: 5px" width="78" height="100"
+                                 src="{% static 'images' %}/card_{{ user.handled_card_2 }}.png">
+                            <p>{{ user.current_player.bot_name }}</p>
                         {% endif %}
                     {% endfor %}
                 </td>
@@ -247,89 +213,6 @@
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
                 <td style="width: 10%"></td>
-            </tr>
-            <tr style="align-content: left ; height: 90px">
-                <td style="width: 5%"></td>
-                <td></td>
-            {% if current_player.player_user and current_player.action_preflop != 'Fold' %}
-                <td>
-                    <a href="/lobby/{{ user }}/game/check/">
-                        <input type="button"
-                            class="waves-effect waves-light btn-small"
-                             value="check" >
-                        </input>
-                    </a>
-
-                </td>
-                <td>
-                    <a href="/lobby/{{ user }}/game/fold/">
-                        <input type="button"
-                            class="waves-effect waves-light btn-small"
-                             value="fold" >
-                        </input>
-                    </a>
-
-                </td>
-
-                <td>
-                    <a href="/lobby/{{ user }}/game/call/">
-                        <input type="button"
-                            class="waves-effect waves-light btn-small"
-                             value="call" >
-                        </input>
-                    </a>
-
-                </td>
-                <td style="width: 10%">
-                    <button name="raise_button"
-                            class="waves-effect waves-light btn-small"
-                             value="raise"  type="submit">Raise
-                    </button>
-                </td>
-                <td>
-                    <input name="raise_number" type="number" step="{{ game_data.big_blind }}"
-
-                                min="{{ game_data.big_blind }}" value="{{ game_data.big_blind }}"
-
-                           style="background: #FAFAFA; border-radius: 60px;
-                        text-align: center; font-size: 120%;">
-                </td>
-                {% else %}
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-                <td style="width: 10%"></td>
-            {% endif %}
-                <td style="width: 10%"></td>
-                <td style="width: 10%">
-                </td>
-                <td style="width: 10%">
-                {% if flag == 0 %}
-                    {% if current_player.action_preflop == 'Fold' %}
-                        <button name="step"
-                            class="waves-effect waves-light btn-small"
-                            type="submit" >Пропустить</button>
-                        {% else %}
-                    <button name="step"
-                            class="waves-effect waves-light btn-small"
-                            type="submit" >Ходбота</button>
-                    {% endif %}
-                {% elif flag == 2 %}
-                    <a href="/lobby/{{ user }}/">
-                        <input type="button"
-                            class="waves-effect waves-light btn-small"
-                             value="New game" >
-                        </input>
-                    </a>
-                {% elif flag == 1 %}
-                    <a href="">
-                        <input type="button" class="waves-effect waves-light btn-small"
-                             value="Showdown" >
-                        </input>
-                    </a>
-                {% endif %}
-                </td>
             </tr>
         </table>
     </form>

@@ -20,7 +20,7 @@
             <div class="nav-wrapper" >
               <a href="/" class="brand-logo">JoyCasino</a>
               <ul id="nav-mobile" class="right hide-on-med-and-down">
-                  {% if user.is_active or user.user.is_authenticated %}
+                  {% if user.is_active or user.is_authenticated %}
                       <li><a href="/lobby/{{ user }}/"> Lobby </a></li>
                       <li><a href="/profile/{{ user }}/">{{ user }}</a></li>
                   {% else %}
@@ -30,9 +30,9 @@
               </ul>
             </div>
         </nav>
-        <div class="section white">
+        <div class="section white-text">
         <div class="row container">
-        <div class="row" >{% block content %}{% endblock %}</div>
+        <div class="row">{% block content %}{% endblock %}</div>
         </div>
         </div>
         <footer class="page-footer">

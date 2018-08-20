@@ -55,7 +55,7 @@ def change_position(obj):
 
 def combination(hand, deck):
     streets = [
-        [14, 2, 3, 4, 5], [2, 3, 4, 5, 6], [3, 4, 5, 6, 7], [4, 5, 6, 7, 8],
+        [1, 2, 3, 4, 5], [2, 3, 4, 5, 6], [3, 4, 5, 6, 7], [4, 5, 6, 7, 8],
         [5, 6, 7, 8, 9], [6, 7, 8, 9, 10], [7, 8, 9, 10, 11],
         [8, 9, 10, 11, 12], [9, 10, 11, 12, 13], [10, 11, 12, 13, 14]
     ]
@@ -102,30 +102,29 @@ def combination(hand, deck):
                 section.count(element) == 3:
             return 'full house'
         elif hand[1] != hand[3]:
-            if deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0 or \
-                    deck.count(hand[1]) == 0 and deck.count(hand[3]) == 1:
-                if deck.count(hand[0]) <= 3 and deck.count(hand[2]) <= 3:
-                    if section.count(element) < 3:
-                        for street in streets:
-                            if ''.join(['{}'.format(_) for _ in array]).count(
-                                    ''.join(
-                                        ['{}'.format(s) for s in street])) > 0:
-                                if hand[0] == hand[2] and deck.count(
-                                        hand[0]) >= 3 or hand[0] != hand[2] and\
-                                        deck.count(
-                                            hand[0]) >= 4 or deck.count(
-                                                                hand[2]) >= 4:
-                                    if ''.join(['{}'.format(_) for _ in
-                                                array]).count('1011121314') > 0:
-                                        return 'flush royal'
-                                    return 'street flush'
-                                return 'street'
-                            return None
+            # if deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0 or \
+            #         deck.count(hand[1]) == 0 and deck.count(hand[3]) == 1:
+            #     if deck.count(hand[0]) <= 3 and deck.count(hand[2]) <= 3:
+            #         if section.count(element) < 3:
+            #             for street in streets:
+            #                 if ''.join(['{}'.format(_) for _ in array]).count(
+            #                         ''.join(
+            #                             ['{}'.format(s) for s in street])) > 0:
+            #                     if hand[0] == hand[2] and deck.count(
+            #                             hand[0]) >= 3 or hand[0] != hand[2] and\
+            #                             deck.count(
+            #                                 hand[0]) >= 4 or deck.count(
+            #                                                     hand[2]) >= 4:
+            #                         if ''.join(['{}'.format(_) for _ in
+            #                                     array]).count('1011121314') > 0:
+            #                             return 'flush royal'
+            #                         return 'street flush'
+            #                     return 'street'
             if deck.count(hand[3]) == 1 and deck.count(hand[1]) == 0 or \
                     deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0:
                 if section.count(element) == 1:
                     return 'pair'
-            if deck.count(hand[3]) == 1 and deck.count(hand[1]) == 0 or \
+            elif deck.count(hand[3]) == 1 and deck.count(hand[1]) == 0 or \
                     deck.count(hand[1]) == 1 and deck.count(hand[3]) == 0:
                 if section.count(element) == 2:
                     return 'tow pair'

@@ -1271,7 +1271,8 @@ class RiverRound(TemplateView):
                     status=change_position(status))
 
             elif current_player.action_preflop.startswith('C'):
-                if current_player.action_preflop == 'Call':
+                if current_player.action_preflop == 'Call' or \
+                        current_player.action_preflop == 'Check1':
                     GameWithPlayers.objects.filter(
                         game=game_data,
                         position=players_positions.get(status)
@@ -1456,15 +1457,18 @@ class ShowDown(TemplateView):
         ]
 
         if len(list_of_pos) == 1:
-            if GameWithPlayers.objects.get(position=list_of_pos[0]).player_bot:
+            if GameWithPlayers.objects.get(game=game_data,
+                                           position=list_of_pos[0]).player_bot:
                 CurrentGame.objects.filter(id=game_data.id).update(
                     winner=GameWithPlayers.objects.get(
-                        position=list_of_pos[0]).player_bot.bot_name
+                        position=list_of_pos[0],
+                        game=game_data).player_bot.bot_name
                 )
             else:
 
                 CurrentGame.objects.filter(id=game_data.id).update(
                     winner=GameWithPlayers.objects.get(
+                        game=game_data,
                         position=list_of_pos[0]).player_user.username
                 )
                 CustomUser.objects.filter(
@@ -1493,40 +1497,50 @@ class ShowDown(TemplateView):
             if dct_of_pos_and_combos_value.get(list_of_pos[0]) == 0:
 
                 for lst in pos_handled_cards.values():
-                    for index in range(len(lst[2:])):
-                        if lst[0] and lst[1] < (lst[2:])[index]:
+                    test = lst[2:]
+                    test.remove(min(test))
 
+                    for index in range(len(test)):
+                        if lst[0] and lst[1] < test[index]:
                             CurrentGame.objects.filter(
                                 id=game_data.id).update(winner='Draw')
-
-                        winner_pos = [
-                            pos for pos in pos_handled_cards if sum(
-                                pos_handled_cards.get(pos)
-                            ) == max(
-                                [sum(value) for value in
-                                 pos_handled_cards.values()])
-                        ]
-
-                        if GameWithPlayers.objects.get(
-                                position=winner_pos[0]).player_bot:
+                        elif lst[0] < test[index]:
                             CurrentGame.objects.filter(
-                                id=game_data.id).update(
-                                winner=GameWithPlayers.objects.get(
-                                    position=winner_pos[0],
-                                    game=game_data).player_bot.bot_name
-                            )
+                                id=game_data.id).update(winner='Draw')
+                        elif lst[1] < test[index]:
+                            CurrentGame.objects.filter(
+                                id=game_data.id).update(winner='Draw')
                         else:
-                            CurrentGame.objects.filter(
-                                id=game_data.id).update(
-                                winner=GameWithPlayers.objects.get(
-                                    position=winner_pos[
-                                        0]).player_user.username
-                            )
-                            CustomUser.objects.filter(
-                                user_player__position=list_of_pos[0]
-                            ).update(
-                                balance=F('balance') + game_data.bank
-                            )
+                            winner_pos = [
+                                pos for pos in pos_handled_cards if
+                                pos_handled_cards.get(pos)[:2] == max(
+                                        [value[:2] for value in
+                                            pos_handled_cards.values()]
+                                    )
+                            ]
+
+                            if GameWithPlayers.objects.get(
+                                    position=winner_pos[0],
+                                    game=game_data).player_bot:
+                                CurrentGame.objects.filter(
+                                    id=game_data.id).update(
+                                    winner=GameWithPlayers.objects.get(
+                                        position=winner_pos[0],
+                                        game=game_data).player_bot.bot_name
+                                )
+                            else:
+                                CurrentGame.objects.filter(
+                                    id=game_data.id).update(
+                                    winner=GameWithPlayers.objects.get(
+                                        game=game_data,
+                                        position=winner_pos[
+                                            0]).player_user.username
+                                )
+                                CustomUser.objects.filter(
+                                    user_player__position=list_of_pos[0]
+                                ).update(
+                                    balance=F('balance') + game_data.bank
+                                )
 
             elif dct_of_pos_and_combos_value.get(list_of_pos[0]) == 6:
 
@@ -1645,6 +1659,7 @@ class ShowDown(TemplateView):
                 else:
                     CurrentGame.objects.filter(id=game_data.id).update(
                         winner=GameWithPlayers.objects.get(
+                            game=game_data,
                             position=winner_pos[0]).player_user.username
                     )
                     CustomUser.objects.filter(

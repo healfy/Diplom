@@ -509,25 +509,34 @@ def call(request, username):
 
 def check(request, username):
     game_obj = CurrentGame.objects.last()
-    GameWithPlayers.objects.filter(player_user__username=username,
-                                   game=game_obj).update(
-        action_preflop='Check')
     if 'flop' in request.path:
+        GameWithPlayers.objects.filter(player_user__username=username,
+                                       game=game_obj).update(
+            action_preflop='Check')
         PositionOfCurrentPlayer.objects.filter(id=2).update(
             status=change_position(
                 PositionOfCurrentPlayer.objects.get(id=2).status))
         return redirect('flop', username)
-    elif 'turn' in request.path.__str__():
+    elif 'turn' in request.path:
+        GameWithPlayers.objects.filter(player_user__username=username,
+                                       game=game_obj).update(
+            action_preflop='Check1')
         PositionOfCurrentPlayer.objects.filter(id=2).update(
             status=change_position(
                 PositionOfCurrentPlayer.objects.get(id=2).status))
         return redirect('turn', username)
     elif 'river' in request.path:
+        GameWithPlayers.objects.filter(player_user__username=username,
+                                       game=game_obj).update(
+            action_preflop='Check2')
         PositionOfCurrentPlayer.objects.filter(id=2).update(
             status=change_position(
                 PositionOfCurrentPlayer.objects.get(id=2).status))
         return redirect('river', username)
     else:
+        GameWithPlayers.objects.filter(player_user__username=username,
+                                       game=game_obj).update(
+            action_preflop='Check')
         PositionOfCurrentPlayer.objects.filter(id=1).update(
             status=change_position(
                 PositionOfCurrentPlayer.objects.get(id=1).status))

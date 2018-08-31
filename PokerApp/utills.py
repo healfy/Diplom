@@ -44,7 +44,7 @@ def is_seq(h):
     h = list(sorted(h))
     list_of_straights = [h[i:i + 5] for i in range(len(h) - 4) if
                          h[i:i + 5] == [s for s in range(h[i], h[i] + 5)]]
-    if len(list_of_straights) > 1:
+    if len(list_of_straights) >= 1:
         return True, list_of_straights[len(list_of_straights) - 1]
 
     aces = [i for i in h if str(i) == "14"]
@@ -56,8 +56,9 @@ def is_seq(h):
     h = list(sorted(h))
     list_of_straights_2 = [h[i:i + 5] for i in range(len(h) - 4) if
                            h[i:i + 5] == [s for s in range(h[i], h[i] + 5)]]
-    if len(list_of_straights_2) > 1:
+    if len(list_of_straights_2) >= 1:
         return True, list_of_straights[len(list_of_straights_2) - 1]
+    return False
 
 
 def is_flush(h):
@@ -170,22 +171,28 @@ def compare_hands(hands):
     if list_of_combs[0][0] == "STRAIGHT FLUSH":
 
         st_dict = {
-            ps: [is_seq(hand)] for ps, hand in hands.items()
+            ps: is_seq(hand) for ps, hand in hands.items()
         }
 
         wp = [
-            pos for pos, vl in st_dict.items() if st_dict[pos][1] == max(vl[1])
+            pos for pos in st_dict if max(
+                [max(v[1]) for v in st_dict.values()])in st_dict[pos][1]
         ]
         return wp[0]
 
     elif list_of_combs[0][0] == "PAIR":
+        hands = {
+            pos: [int(x[1:]) for x in convert_to_nums(
+                hands.get(pos))] for pos in hands
+        }
         wp = [
             pos for pos, combs_value in hands.items() if
             int(combs_value[1]) == max([int(_[1]) for _ in hands.values()])
         ]
         if len(wp) > 1:
             compare_dict = {
-                pos: [int(x[1:]) for x in hands.get(pos)] for pos in wp}
+                pos: [int(x[1:]) for x in hands.get(pos)] for pos in wp
+            }
 
             for lst in compare_dict.values():
                 for index in range(len(lst[2:])):
@@ -256,11 +263,17 @@ def compare_hands(hands):
             return 'Draw'
 
         wp = [
-            pos for pos, vl in st_dict.items() if st_dict[pos][1] == max(vl[1])
+            pos for pos in st_dict if max(
+                [max(v[1]) for v in st_dict.values()]) in st_dict[pos][1]
         ]
         return wp[0]
 
     elif list_of_combs[0][0] == 'FULL HOUSE':
+
+        hands = {
+            pos: [int(x[1:]) for x in convert_to_nums(hands.get(pos))] for pos
+            in hands
+        }
 
         winner_pos = [
             pos for pos in hands if list(
@@ -284,43 +297,30 @@ def compare_hands(hands):
             return 'Draw'
 
         return winner_pos[0]
-#
-#         fh1, fh2 = int(is_fullhouse(h1)[1][0][0]), int(
-#             is_fullhouse(h2)[1][0][0])
-#         if fh1 > fh2:
-#             return "left", one[0], one[1]
-#         else:
-#             return "right", two[0], two[1]
-#     elif one[0] == "HIGH CARD":
-#         sett1, sett2 = convert_tonums(h1), convert_tonums(h2)
-#         sett1, sett2 = [int(x[:-1]) for x in sett1], [int(x[:-1]) for x in
-#                                                       sett2]
-#         com = compare(sett1, sett2)
-#         if com == "TIE":
-#             return "none", one[1], two[1]
-#         elif com == "RIGHT":
-#             return "right", two[0], two[1]
-#         else:
-#             return "left", one[0], one[1]
-#
-#     elif len(one[1]) < 5:
-#         if max(one[1]) == max(two[1]):
-#             return "none", one[1], two[1]
-#         elif max(one[1]) > max(two[1]):
-#             return "left", one[0], one[1]
-#         else:
-#             return "right", two[0], two[1]
-#     else:
-#         n_one, n_two = convert_tonums(one[1]), convert_tonums(two[1])
-#         n_one, n_two = [int(x[:-1]) for x in n_one], [int(x[:-1]) for x in
-#                                                       n_two]
-#
-#         if max(n_one) == max(n_two):
-#             return "none", one[1], two[1]
-#         elif max(n_one) > max(n_two):
-#             return "left", one[0], one[1]
-#         else:
-#             return "right", two[0], two[1]
-#
-#
-#
+
+    elif list_of_combs[0][0] == "THREE OF A KIND":
+
+        hands = {
+            pos: [int(x[1:]) for x in convert_to_nums(hands.get(pos))] for pos
+            in hands
+        }
+
+        wp = [
+            pos for pos, combs_value in hands.items() if
+            int(combs_value[1]) == max([int(_[1]) for _ in hands.values()])
+        ]
+
+        if len(wp) > 1:
+
+            deck = [v for v in hands.values()][0][2:]
+
+            if len(is_three_of_a_kind(deck)) > 1:
+
+                for hands_lst in hands.values():
+                    while int(list_of_combs[0][1]) in hands_lst:
+                        hands_lst.remove(int(list_of_combs[0][1]))
+
+                    for i in range(len(hands_lst[2:])):
+                        if hands_lst[0] and hands_lst[1] < hands_lst[2:][i]:
+                            return 'Draw'
+
